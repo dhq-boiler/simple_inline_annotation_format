@@ -1,3 +1,6 @@
+require_relative "denotation_validator"
+require_relative "generator_error"
+
 class SimpleInlineTextAnnotation
   class Denotation
     attr_reader :begin_pos, :end_pos, :obj

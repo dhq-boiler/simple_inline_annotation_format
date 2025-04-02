@@ -1,3 +1,6 @@
+require_relative 'entity_type_collection'
+require_relative "denotation"
+
 class SimpleInlineTextAnnotation
   class Parser
     # DENOTATION_PATTERN matches two consecutive pairs of square brackets.

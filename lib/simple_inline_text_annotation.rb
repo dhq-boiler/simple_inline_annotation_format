@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "simple_inline_text_annotation/version"
+require_relative "simple_inline_text_annotation/generator"
+require_relative "simple_inline_text_annotation/parser"
 
 class SimpleInlineTextAnnotation
   # ENTITY_TYPE_PATTERN matches a pair of square brackets which is followed by a colon and URL.

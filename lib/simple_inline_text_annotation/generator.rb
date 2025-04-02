@@ -1,3 +1,5 @@
+require_relative "denotation"
+
 class SimpleInlineTextAnnotation
   class Generator
     include DenotationValidator
@@ -53,7 +55,7 @@ class SimpleInlineTextAnnotation
     end
 
     def build_label_definitions
-      return nil if labeled_entity_types.blank?
+      return nil if labeled_entity_types.nil? || labeled_entity_types.empty?
 
       labeled_entity_types.map do |entity|
         "[#{entity["label"]}]: #{entity["id"]}"
