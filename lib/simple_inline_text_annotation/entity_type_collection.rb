@@ -42,19 +42,27 @@ class SimpleInlineTextAnnotation
       entity_types = {}
 
       @source.scan(ENTITY_TYPE_BLOCK_PATTERN).each do |entity_block|
-        entity_block[0].each_line do |line|
-          match = line.strip.match(ENTITY_TYPE_PATTERN)
-          next unless match
-
-          label = match[1]
-          id = match[2]
-          next if label == id # Do not create entity_type if label and id is same.
-
-          entity_types[label] ||= id
-        end
+        process_entity_block(entity_block, entity_types)
       end
 
       entity_types
+    end
+
+    def process_entity_block(entity_block, entity_types)
+      entity_block[0].each_line do |line|
+        process_entity_line(line, entity_types)
+      end
+    end
+
+    def process_entity_line(line, entity_types)
+      match = line.strip.match(ENTITY_TYPE_PATTERN)
+      return unless match
+
+      label = match[1]
+      id = match[2]
+      return if label == id # Do not create entity_type if label and id is same.
+
+      entity_types[label] ||= id
     end
   end
 end
