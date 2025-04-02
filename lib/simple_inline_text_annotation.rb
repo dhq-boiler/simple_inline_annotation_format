@@ -47,9 +47,7 @@ class SimpleInlineTextAnnotation
 
   def format_text(text)
     result = remove_escape_backslash_from(text)
-    result = reduce_consecutive_newlines_from(result)
-
-    result
+    reduce_consecutive_newlines_from(result)
   end
 
   # Remove backslashes used to escape inline annotation format.
@@ -57,7 +55,7 @@ class SimpleInlineTextAnnotation
   # rather than an annotation. This method removes the leading
   # backslash and keeps the text as `[Elon Musk][Person]`.
   def remove_escape_backslash_from(text)
-    text.gsub(ESCAPE_PATTERN, '')
+    text.gsub(ESCAPE_PATTERN, "")
   end
 
   # Reduce consecutive newlines to a single newline.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SimpleInlineTextAnnotation
   module DenotationValidator
     def validate(denotations, text_length)
@@ -13,19 +15,19 @@ class SimpleInlineTextAnnotation
     private
 
     def remove_duplicates_from(denotations)
-      denotations.uniq { |denotation| denotation.span }
+      denotations.uniq(&:span)
     end
 
     def remove_non_integer_positions_from(denotations)
-      denotations.reject { |denotation| denotation.position_not_integer? }
+      denotations.reject(&:position_not_integer?)
     end
 
     def remove_negative_positions_from(denotations)
-      denotations.reject { |denotation| denotation.position_negative? }
+      denotations.reject(&:position_negative?)
     end
 
     def remove_invalid_positions_from(denotations)
-      denotations.reject { |denotation| denotation.position_invalid? }
+      denotations.reject(&:position_invalid?)
     end
 
     def remove_out_of_bound_positions_from(denotations, text_length)

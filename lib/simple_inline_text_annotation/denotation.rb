@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "denotation_validator"
 require_relative "generator_error"
 
@@ -28,7 +30,7 @@ class SimpleInlineTextAnnotation
     end
 
     def position_negative?
-      @begin_pos < 0 || @end_pos < 0
+      @begin_pos.negative? || @end_pos.negative?
     end
 
     def position_invalid?

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "denotation"
 
 class SimpleInlineTextAnnotation
@@ -13,6 +15,7 @@ class SimpleInlineTextAnnotation
     def generate
       text = @source["text"]
       raise SimpleInlineTextAnnotation::GeneratorError, 'The "text" key is missing.' if text.nil?
+
       denotations = validate(@denotations, text.length)
 
       annotated_text = annotate_text(text, denotations)

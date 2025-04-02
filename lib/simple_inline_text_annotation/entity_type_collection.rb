@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SimpleInlineTextAnnotation
   class EntityTypeCollection
     def initialize(source)
@@ -44,7 +46,8 @@ class SimpleInlineTextAnnotation
           match = line.strip.match(ENTITY_TYPE_PATTERN)
           next unless match
 
-          label, id = match[1], match[2]
+          label = match[1]
+          id = match[2]
           next if label == id # Do not create entity_type if label and id is same.
 
           entity_types[label] ||= id
