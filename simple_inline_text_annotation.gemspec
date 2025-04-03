@@ -2,40 +2,29 @@
 
 require_relative "lib/simple_inline_text_annotation/version"
 
-Gem::Specification.new do |spec|
-  spec.name = "simple_inline_text_annotation"
-  spec.version = SimpleInlineTextAnnotation::VERSION
-  spec.authors = ["xaiBUh29wX"]
-  spec.email = ["arino.tamada@luxiar.com"]
+Gem::Specification.new do |s|
+  s.name = "simple_inline_text_annotation"
+  s.version = SimpleInlineTextAnnotation::VERSION
+  s.authors = ["xaiBUh29wX"]
+  s.email = ["arino.tamada@luxiar.com"]
 
-  spec.summary = "TODO: Write a short summary, because RubyGems requires one."
-  spec.description = "TODO: Write a longer description or delete this line."
-  spec.homepage = "TODO: Put your gem's website or public repo URL here."
-  spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.1.0"
+  s.summary = "A Ruby gem for inline text annotation with denotations and entity types."
+  s.description = "This gem provides inline text annotation functionality, extracted from PubAnnotation, with support for denotations, entity types, and nested spans."
+  s.homepage = "https://github.com/Tamada-Arino/simple-inline-text-annotation"
+  s.license = "MIT"
+  s.required_ruby_version = ">= 3.1.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
+  s.metadata["homepage_uri"] = s.homepage
+  s.metadata["changelog_uri"] = "https://github.com/Tamada-Arino/simple-inline-text-annotation/blob/master/CHANGELOG.md"
 
-  spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
-
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  gemspec = File.basename(__FILE__)
-  spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
+  gems = File.basename(__FILE__)
+  s.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
-      (f == gemspec) ||
-        f.start_with?(*%w[bin/ test/ spec/ features/ .git .github appveyor Gemfile])
+      (f == gems) ||
+        f.start_with?(*%w[bin/ spec/ .git .github Gemfile])
     end
   end
-  spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
-
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  s.bindir = "exe"
+  s.executables = s.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  s.require_paths = ["lib"]
 end
