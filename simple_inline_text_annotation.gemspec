@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.email = ["arino.tamada@luxiar.com"]
 
   s.summary = "A Ruby gem for inline text annotation with denotations and entity types."
-  s.description = "This gem provides inline text annotation functionality, extracted from PubAnnotation, with support for denotations, entity types, and nested spans."
+  s.description = "This gem provides inline text annotation functionality, extracted from PubAnnotation, " \
+                  "with support for denotations, entity types, and nested spans."
   s.homepage = "https://github.com/Tamada-Arino/simple-inline-text-annotation"
   s.license = "MIT"
   s.required_ruby_version = ">= 3.1.0"
