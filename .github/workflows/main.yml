@@ -8,14 +8,12 @@ on:
   pull_request:
 
 jobs:
-  build:
+  rubocop:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
     strategy:
       matrix:
-        ruby:
-          - '3.4.2'
-
+        ruby: [3.4.2]
+    name: RuboCop (Ruby ${{ matrix.ruby }})
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -23,5 +21,25 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Run the default task
-        run: bundle exec rake
+      - name: Install dependencies
+        run: bundle install
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+  rspec:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [3.4.2]
+    name: RSpec (Ruby ${{ matrix.ruby }})
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Install dependencies
+        run: bundle install
+      - name: Run RSpec
+        run: bundle exec rspec
