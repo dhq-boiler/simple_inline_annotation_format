@@ -18,10 +18,10 @@ Gem::Specification.new do |s|
   s.metadata["homepage_uri"] = s.homepage
   s.metadata["changelog_uri"] = "https://github.com/Tamada-Arino/simple-inline-text-annotation/blob/master/CHANGELOG.md"
 
-  gems = File.basename(__FILE__)
+  gemspec = File.basename(__FILE__)
   s.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
-      (f == gems) ||
+      (f == gemspec) ||
         f.start_with?(*%w[bin/ spec/ .git .github Gemfile])
     end
   end
