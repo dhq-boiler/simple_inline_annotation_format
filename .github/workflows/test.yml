@@ -1,0 +1,32 @@
+name: Test Workflow
+
+on:
+  workflow_call: # 他のワークフローから呼び出し可能にする
+    inputs:
+      ruby-version:
+        description: 'Ruby version to use'
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Ruby ${{ inputs.ruby-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ inputs.ruby-version }}
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+      - name: Run RSpec
+        run: bundle exec rspec
