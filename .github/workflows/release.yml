@@ -11,13 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Run Tests
+        uses: ./.github/workflows/test.yml
         with:
-          ruby-version: 3.4.2
+          ruby-version: '3.4.2'
 
       - name: Build gem
         run: gem build simple_inline_text_annotation.gemspec
