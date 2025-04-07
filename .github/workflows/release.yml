@@ -1,13 +1,15 @@
 name: Release Gem
 
 on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
   pull_request:
-    types:
-      - closed
+    branches: [ main ]
 
 jobs:
   release:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    name: Release to RubyGems
     runs-on: ubuntu-latest
 
     steps:
