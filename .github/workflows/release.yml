@@ -17,9 +17,9 @@ jobs:
           ruby-version: '3.4.2'
 
       - name: Build gem
-        run: gem build simple_inline_text_annotation.gemspec
+        run: gem build ruby/simple_inline_text_annotation.gemspec
 
       - name: Publish to Rubygems
         env:
           RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-        run: gem push simple_inline_text_annotation-*.gem
+        run: gem push ruby/simple_inline_text_annotation-*.gem
