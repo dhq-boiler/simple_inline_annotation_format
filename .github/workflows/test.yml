@@ -1,7 +1,7 @@
 name: Test Workflow
 
 on:
-  workflow_call: # 他のワークフローから呼び出し可能にする
+  workflow_call:
     inputs:
       ruby-version:
         description: 'Ruby version to use'
@@ -23,10 +23,16 @@ jobs:
           bundler-cache: true
 
       - name: Install dependencies
-        run: bundle install
+        run: |
+          cd ruby
+          bundle install
 
       - name: Run RuboCop
-        run: bundle exec rubocop
+        run: |
+          cd ruby
+          bundle exec rubocop
 
       - name: Run RSpec
-        run: bundle exec rspec
+        run: |
+          cd ruby
+          bundle exec rspec
