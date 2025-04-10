@@ -14,9 +14,9 @@ class Parser {
   }
 
   parse() {
-    let fullText = this.sourceWithoutReferences();
+    let fullText = this.#sourceWithoutReferences();
 
-    fullText = this.processDenotations(fullText);
+    fullText = this.#processDenotations(fullText);
 
     return new SimpleInlineTextAnnotation(
       fullText,
@@ -26,7 +26,7 @@ class Parser {
   }
 
   // Remove references from the source.
-  sourceWithoutReferences() {
+  #sourceWithoutReferences() {
     return this.source
       .replace(ENTITY_TYPE_BLOCK_PATTERN, (block) =>
         block.startsWith('\n\n') ? '\n\n' : ''
@@ -34,11 +34,11 @@ class Parser {
       .trim();
   }
 
-  getObjFor(label) {
+  #getObjFor(label) {
     return this.entityTypeCollection.get(label) || label;
   }
 
-  processDenotations(fullText) {
+  #processDenotations(fullText) {
     const regex = new RegExp(DENOTATION_PATTERN, 'g');
     let match;
 
@@ -49,7 +49,7 @@ class Parser {
       const beginPos = match.index;
       const endPos = beginPos + targetText.length;
 
-      const obj = this.getObjFor(label);
+      const obj = this.#getObjFor(label);
 
       this.denotations.push(new Denotation(beginPos, endPos, obj));
 
