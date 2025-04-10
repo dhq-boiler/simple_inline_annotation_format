@@ -1,9 +1,8 @@
 {
   "name": "simple-inline-text-annotation",
   "version": "1.0.0",
-  "type": "module",
   "description": "A JavaScript library for inline text annotation with denotations and entity types",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "scripts": {
     "test": "vitest"
   },
