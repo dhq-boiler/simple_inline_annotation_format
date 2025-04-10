@@ -1,4 +1,5 @@
 import Generator from './generator.mjs';
+import Parser from './parser.mjs';
 
 const ESCAPE_PATTERN = /\\(?=\[[^\]]+\]\[[^\]]+\])/;
 
