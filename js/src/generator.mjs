@@ -4,7 +4,7 @@ import DenotationValidator from './denotation_validator.mjs';
 class Generator {
   constructor(source) {
     this.source = Object.freeze({ ...source });
-    this.denotations = this.buildDenotations(source.denotations || []);
+    this.denotations = this.#buildDenotations(source.denotations || []);
     this.config = this.source.config;
   }
 
@@ -15,27 +15,26 @@ class Generator {
     }
 
     const denotations =  DenotationValidator.validate(this.denotations, text.length);
-
-    const annotatedText = this.annotateText(text, denotations);
-    const labelDefinitions = this.buildLabelDefinitions();
+    const annotatedText = this.#annotateText(text, denotations);
+    const labelDefinitions = this.#buildLabelDefinitions();
 
     return [annotatedText, labelDefinitions].filter(Boolean).join('\n\n');
   }
 
-  buildDenotations(denotations) {
+  #buildDenotations(denotations) {
     return denotations.map(
       (d) => new Denotation(d.span.begin, d.span.end, d.obj)
     );
   }
 
-  annotateText(text, denotations) {
+  #annotateText(text, denotations) {
     // Annotate text from the end to ensure position calculation.
     denotations
       .sort((a, b) => b.beginPos - a.beginPos)
       .forEach((denotation) => {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
-        const obj = this.getObj(denotation.obj);
+        const obj = this.#getObj(denotation.obj);
 
         const annotatedText = `[${text.slice(beginPos, endPos)}][${obj}]`;
         text = text.slice(0, beginPos) + annotatedText + text.slice(endPos);
@@ -44,8 +43,8 @@ class Generator {
     return text;
   }
 
-  buildLabelDefinitions() {
-    const labeledEntityTypes = this.labeledEntityTypes();
+  #buildLabelDefinitions() {
+    const labeledEntityTypes = this.#labeledEntityTypes();
     if (!labeledEntityTypes || labeledEntityTypes.length === 0) {
       return null;
     }
@@ -55,7 +54,7 @@ class Generator {
       .join('\n');
   }
 
-  labeledEntityTypes() {
+  #labeledEntityTypes() {
     if (!this.config) {
       return null;
     }
@@ -67,12 +66,12 @@ class Generator {
     );
   }
 
-  getObj(obj) {
-    if (!this.labeledEntityTypes()) {
+  #getObj(obj) {
+    if (!this.#labeledEntityTypes()) {
       return obj;
     }
 
-    const entity = this.labeledEntityTypes().find((entityType) => entityType.id === obj);
+    const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
     return entity ? entity.label : obj;
   }
 }
