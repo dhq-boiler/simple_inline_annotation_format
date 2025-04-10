@@ -5,46 +5,41 @@ class Denotation {
     this.obj = obj;
   }
 
-  span() {
+  get span() {
     return { begin: this.beginPos, end: this.endPos };
   }
 
   toObject() {
-    return { span: this.span(), obj: this.obj };
+    return { span: this.span, obj: this.obj };
   }
 
-  nestedWithin(other) {
+  isNestedWithin(other) {
     return other.beginPos <= this.beginPos && this.endPos <= other.endPos;
   }
 
-  positionNotInteger() {
+  get isPositionNotInteger() {
     return !(Number.isInteger(this.beginPos) && Number.isInteger(this.endPos));
   }
 
-  positionNegative() {
+  get isPositionNegative() {
     return this.beginPos < 0 || this.endPos < 0;
   }
 
-  positionInvalid() {
+  get isPositionInvalid() {
     return this.beginPos > this.endPos;
   }
 
-  outOfBounds(textLength) {
+  isOutOfBounds(textLength) {
     return this.beginPos >= textLength || this.endPos > textLength;
   }
 
-  boundaryCrossing(other) {
+  isBoundaryCrossing(other) {
     const startsInsideOther =
       this.beginPos > other.beginPos && this.beginPos < other.endPos;
     const endsInsideOther =
       this.endPos > other.beginPos && this.endPos < other.endPos;
 
     return startsInsideOther || endsInsideOther;
-  }
-
-  static validateDenotations(denotations, textLength) {
-    const validator = new DenotationValidator();
-    return validator.validate(denotations, textLength);
   }
 }
 
