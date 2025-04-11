@@ -14,7 +14,7 @@ class EntityTypeCollection {
    * @returns {string|undefined} The ID associated with the label, or undefined if not found
    */
   get(label) {
-    return this.#entityTypes[label];
+    return this.#getEntityTypes[label];
   }
 
   /**
@@ -28,7 +28,7 @@ class EntityTypeCollection {
    * ]
    */
   get config() {
-    return Object.entries(this.#entityTypes).map(([label, id]) => ({
+    return Object.entries(this.#getEntityTypes).map(([label, id]) => ({
       id,
       label,
     }));
@@ -46,7 +46,7 @@ class EntityTypeCollection {
    *   "Organization": "https://example.com/Organization"
    * }
    */
-  get #entityTypes() {
+  get #getEntityTypes() {
     if (!this._entityTypes) {
       this._entityTypes = this.#readEntitiesFromSource();
     }
