@@ -1,15 +1,15 @@
-const DenotationValidator = {
+class DenotationValidator {
   validate(denotations, textLength) {
-    let result = this.removeDuplicatesFrom(denotations);
-    result = this.removeNonIntegerPositionsFrom(result);
-    result = this.removeNegativePositionsFrom(result);
-    result = this.removeInvalidPositionsFrom(result);
-    result = this.removeOutOfBoundPositionsFrom(result, textLength);
-    result = this.removeNestsFrom(result);
-    return this.removeBoundaryCrossesFrom(result);
-  },
+    let result = this.#removeDuplicatesFrom(denotations);
+    result = this.#removeNonIntegerPositionsFrom(result);
+    result = this.#removeNegativePositionsFrom(result);
+    result = this.#removeInvalidPositionsFrom(result);
+    result = this.#removeOutOfBoundPositionsFrom(result, textLength);
+    result = this.#removeNestsFrom(result);
+    return this.#removeBoundaryCrossesFrom(result);
+  }
 
-  removeDuplicatesFrom(denotations) {
+  #removeDuplicatesFrom(denotations) {
     const seen = new Set();
     return denotations.filter((denotation) => {
       const span = JSON.stringify(denotation.span);
@@ -19,25 +19,25 @@ const DenotationValidator = {
       seen.add(span);
       return true;
     });
-  },
+  }
 
-  removeNonIntegerPositionsFrom(denotations) {
+  #removeNonIntegerPositionsFrom(denotations) {
     return denotations.filter((denotation) => !denotation.isPositionNotInteger);
-  },
+  }
 
-  removeNegativePositionsFrom(denotations) {
+  #removeNegativePositionsFrom(denotations) {
     return denotations.filter((denotation) => !denotation.isPositionNegative);
-  },
+  }
 
-  removeInvalidPositionsFrom(denotations) {
+  #removeInvalidPositionsFrom(denotations) {
     return denotations.filter((denotation) => !denotation.isPositionInvalid);
-  },
+  }
 
-  removeOutOfBoundPositionsFrom(denotations, textLength) {
+  #removeOutOfBoundPositionsFrom(denotations, textLength) {
     return denotations.filter((denotation) => !denotation.isOutOfBounds(textLength));
-  },
+  }
 
-  removeNestsFrom(denotations) {
+  #removeNestsFrom(denotations) {
     // Sort by begin_pos in ascending order. If begin_pos is the same, sort by end_pos in descending order.
     const sortedDenotations = denotations.sort((a, b) => {
       if (a.beginPos === b.beginPos) {
@@ -54,13 +54,13 @@ const DenotationValidator = {
     });
 
     return result;
-  },
+  }
 
-  removeBoundaryCrossesFrom(denotations) {
+  #removeBoundaryCrossesFrom(denotations) {
     return denotations.filter((denotation) => {
       return !denotations.some((existing) => denotation !== existing && denotation.isBoundaryCrossing(existing));
     });
-  },
+  }
 };
 
 export default DenotationValidator;

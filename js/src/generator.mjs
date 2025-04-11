@@ -14,7 +14,7 @@ class Generator {
       throw new Error('The "text" key is missing.');
     }
 
-    const denotations =  DenotationValidator.validate(this.denotations, text.length);
+    const denotations =  new DenotationValidator().validate(this.denotations, text.length);
     const annotatedText = this.#annotateText(text, denotations);
     const labelDefinitions = this.#buildLabelDefinitions();
 
