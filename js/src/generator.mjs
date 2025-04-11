@@ -1,5 +1,6 @@
 import Denotation from './denotation.mjs';
 import DenotationValidator from './denotation_validator.mjs';
+import GeneratorError from './generator_error.mjs';
 
 class Generator {
   constructor(source) {
@@ -11,7 +12,7 @@ class Generator {
   generate() {
     const text = this.source.text;
     if (!text) {
-      throw new Error('The "text" key is missing.');
+      throw new GeneratorError('The "text" key is missing.');
     }
 
     const denotations =  new DenotationValidator().validate(this.denotations, text.length);
