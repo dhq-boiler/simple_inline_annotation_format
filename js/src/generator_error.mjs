@@ -1,7 +1,7 @@
 class GeneratorError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'GeneratorError';
+    this.name = this.constructor.name;
   }
 }
 
