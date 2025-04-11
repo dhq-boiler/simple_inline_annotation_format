@@ -7,6 +7,12 @@ class EntityTypeCollection {
     this._entityTypes = null;
   }
 
+  /**
+   * Retrieves the ID for the given entity type label.
+   *
+   * @param {string} label - The entity type label to look up
+   * @returns {string|undefined} The ID associated with the label, or undefined if not found
+   */
   get(label) {
     return this.#entityTypes[label];
   }
