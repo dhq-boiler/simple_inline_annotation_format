@@ -7,10 +7,14 @@ const ENTITY_TYPE_BLOCK_PATTERN = new RegExp(`(?:\\A|\\n\\s*\\n)((?:${ENTITY_TYP
 const DENOTATION_PATTERN = /(?<!\\)\[([^\[]+?)\]\[([^\]]+?)\]/;
 
 class Parser {
+  #source;
+  #denotations;
+  #entityTypeCollection;
+
   constructor(source) {
-    this.source = source;
-    this.denotations = [];
-    this.entityTypeCollection = new EntityTypeCollection(source);
+    this.#source = source;
+    this.#denotations = [];
+    this.#entityTypeCollection = new EntityTypeCollection(source);
   }
 
   parse() {
@@ -20,14 +24,14 @@ class Parser {
 
     return new SimpleInlineTextAnnotation(
       fullText,
-      this.denotations,
-      this.entityTypeCollection
+      this.#denotations,
+      this.#entityTypeCollection
     );
   }
 
   // Remove references from the source.
   #sourceWithoutReferences() {
-    return this.source
+    return this.#source
       .replace(ENTITY_TYPE_BLOCK_PATTERN, (block) =>
         block.startsWith('\n\n') ? '\n\n' : ''
       )
@@ -35,7 +39,7 @@ class Parser {
   }
 
   #getObjFor(label) {
-    return this.entityTypeCollection.get(label) || label;
+    return this.#entityTypeCollection.get(label) || label;
   }
 
   #processDenotations(fullText) {
@@ -51,7 +55,7 @@ class Parser {
 
       const obj = this.#getObjFor(label);
 
-      this.denotations.push(new Denotation(beginPos, endPos, obj));
+      this.#denotations.push(new Denotation(beginPos, endPos, obj));
 
       fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
     }
