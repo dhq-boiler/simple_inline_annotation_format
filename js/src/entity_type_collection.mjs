@@ -16,7 +16,7 @@ class EntityTypeCollection {
    * @returns {string|undefined} The ID associated with the label, or undefined if not found
    */
   get(label) {
-    return this.#getEntityTypes[label];
+    return this.#cachedEntityTypes[label];
   }
 
   /**
@@ -30,7 +30,7 @@ class EntityTypeCollection {
    * ]
    */
   get config() {
-    return Object.entries(this.#getEntityTypes).map(([label, id]) => ({
+    return Object.entries(this.#cachedEntityTypes).map(([label, id]) => ({
       id,
       label,
     }));
@@ -48,7 +48,7 @@ class EntityTypeCollection {
    *   "Organization": "https://example.com/Organization"
    * }
    */
-  get #getEntityTypes() {
+  get #cachedEntityTypes() {
     if (!this.#entityTypes) {
       this.#entityTypes = this.#readEntitiesFromSource();
     }
