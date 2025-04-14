@@ -14,7 +14,7 @@ class SimpleInlineTextAnnotation {
     const parser = new Parser(source);
     const result = parser.parse().#toObject();
 
-    return JSON.stringify(result);
+    return result;
   }
 
   static generate(source) {
