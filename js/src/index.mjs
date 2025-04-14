@@ -1,4 +1,5 @@
 import Generator from './generator.mjs';
+import Parser from './parser.mjs';
 
 const ESCAPE_PATTERN = /\\(?=\[[^\]]+\]\[[^\]]+\])/;
 
@@ -13,7 +14,7 @@ class SimpleInlineTextAnnotation {
     const parser = new Parser(source);
     const result = parser.parse().#toObject();
 
-    return JSON.stringify(result);
+    return result;
   }
 
   static generate(source) {
@@ -52,7 +53,7 @@ class SimpleInlineTextAnnotation {
     if (!this.entityTypeCollection || this.entityTypeCollection.length === 0) {
       return null;
     }
-    return { 'entity types': this.entityTypeCollection.toConfig() };
+    return { 'entity types': this.entityTypeCollection.config };
   }
 }
 
