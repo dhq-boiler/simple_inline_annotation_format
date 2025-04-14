@@ -2,9 +2,11 @@ const ENTITY_TYPE_PATTERN = /^\s*\[([^\]]+)\]:\s+(\S+)(?:\s+(?:"[^"]*"|'[^']*'))
 const ENTITY_TYPE_BLOCK_PATTERN = new RegExp(`(?:\\A|\\n\\s*\\n)((?:${ENTITY_TYPE_PATTERN.source}(?:\\n|$))+)`, 'gm');
 
 class EntityTypeCollection {
+  #source;
+  #entityTypes = null;
+
   constructor(source) {
-    this.source = source;
-    this._entityTypes = null;
+    this.#source = source;
   }
 
   /**
@@ -47,16 +49,16 @@ class EntityTypeCollection {
    * }
    */
   get #getEntityTypes() {
-    if (!this._entityTypes) {
-      this._entityTypes = this.#readEntitiesFromSource();
+    if (!this.#entityTypes) {
+      this.#entityTypes = this.#readEntitiesFromSource();
     }
-    return this._entityTypes;
+    return this.#entityTypes;
   }
 
   #readEntitiesFromSource() {
     const entityTypes = {};
 
-    const matches = Array.from(this.source.matchAll(ENTITY_TYPE_BLOCK_PATTERN));
+    const matches = Array.from(this.#source.matchAll(ENTITY_TYPE_BLOCK_PATTERN));
     for (const match of matches) {
       this.#processEntityBlock(match, entityTypes);
     }
