@@ -6,6 +6,13 @@ class SimpleInlineTextAnnotation
       @source = source
     end
 
+    # get returns the entity type id for a given label.
+    # Example:
+    #   get("Person") => "https://example.com/Person"
+    #
+    # If the label is not found, it returns nil.
+    # Example:
+    #   get("NonExistentLabel") => nil
     def get(label)
       entity_types[label]
     end
