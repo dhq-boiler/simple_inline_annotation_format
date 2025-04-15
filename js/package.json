@@ -6,6 +6,10 @@
   "scripts": {
     "test": "vitest"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tamada-Arino/simple-inline-text-annotation.git"
+  },
   "author": "",
   "license": "MIT",
   "devDependencies": {
