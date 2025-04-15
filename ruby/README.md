@@ -1,6 +1,6 @@
-# SimpleInlineTextAnnotation
+# SimpleInlineTextAnnotation (Ruby gem)
 
-SimpleInlineTextAnnotation is a Ruby gem designed for working with inline text annotations. It allows you to parse and generate annotated text in a structured and efficient way.
+`SimpleInlineTextAnnotation` is a Ruby gem designed for working with inline text annotations. It allows you to parse and generate annotated text in a structured and efficient way.
 
 ## Installation
 
@@ -71,7 +71,7 @@ puts result
 #### Explanation
 
 - The input hash contains:
-  - `"text"`: The plain text ("Elon Musk is a member of the PayPal Mafia.").
+  - `"text"`: The plain text (`"Elon Musk is a member of the PayPal Mafia."`).
   - `"denotations"`: An array of hashes, where each hash specifies:
     - `"span"`: The character positions (`begin` and `end`) of the annotated text.
     - `"obj"`: The annotation type.
