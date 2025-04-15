@@ -4,10 +4,14 @@ import Parser from './parser.mjs';
 const ESCAPE_PATTERN = /\\(?=\[[^\]]+\]\[[^\]]+\])/;
 
 class SimpleInlineTextAnnotation {
+  #text;
+  #denotations;
+  #entityTypeCollection;
+
   constructor(text, denotations, entityTypeCollection) {
-    this.text = text;
-    this.denotations = denotations;
-    this.entityTypeCollection = entityTypeCollection;
+    this.#text = text;
+    this.#denotations = denotations;
+    this.#entityTypeCollection = entityTypeCollection;
   }
 
   static parse(source) {
@@ -24,8 +28,8 @@ class SimpleInlineTextAnnotation {
 
   toObject() {
     const result = {
-      text: this.#formatText(this.text),
-      denotations: this.denotations.map((d) => d.toObject()),
+      text: this.#formatText(this.#text),
+      denotations: this.#denotations.map((d) => d.toObject()),
     };
 
     const config = this.#config();
@@ -50,10 +54,10 @@ class SimpleInlineTextAnnotation {
   }
 
   #config() {
-    if (!this.entityTypeCollection || this.entityTypeCollection.length === 0) {
+    if (!this.#entityTypeCollection || this.#entityTypeCollection.length === 0) {
       return null;
     }
-    return { 'entity types': this.entityTypeCollection.config };
+    return { 'entity types': this.#entityTypeCollection.config };
   }
 }
 
