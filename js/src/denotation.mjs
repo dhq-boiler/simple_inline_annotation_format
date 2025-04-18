@@ -2,11 +2,13 @@ class Denotation {
   #beginPos;
   #endPos;
   #obj;
+  #id;
 
-  constructor(beginPos, endPos, obj) {
+  constructor(beginPos, endPos, obj, id = null) {
     this.#beginPos = beginPos;
     this.#endPos = endPos;
     this.#obj = obj;
+    this.#id = id;
   }
 
   get beginPos() {
@@ -21,12 +23,20 @@ class Denotation {
     return this.#obj;
   }
 
+  get id() {
+    return this.#id;
+  }
+
   get span() {
     return { begin: this.#beginPos, end: this.#endPos };
   }
 
   toObject() {
-    return { span: this.span, obj: this.#obj };
+    const result = { span: this.span, obj: this.#obj };
+    if (this.#id) {
+      result.id = this.#id;
+    }
+    return result;
   }
 
   isNestedWithin(other) {
