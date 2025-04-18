@@ -10,6 +10,7 @@ class Parser {
   #source;
   #denotations;
   #entityTypeCollection;
+  #relations;
 
   constructor(source) {
     this.#source = source;
@@ -18,6 +19,7 @@ class Parser {
 
   parse() {
     this.#denotations = [];
+    this.#relations = [];
     let fullText = this.#sourceWithoutReferences();
 
     fullText = this.#processDenotations(fullText);
@@ -25,6 +27,7 @@ class Parser {
     return new SimpleInlineTextAnnotation(
       fullText,
       this.#denotations,
+      this.#relations,
       this.#entityTypeCollection
     );
   }
@@ -48,16 +51,24 @@ class Parser {
 
     while ((match = regex.exec(fullText)) !== null) {
       const targetText = match[1];
-      const label = match[2];
-
       const beginPos = match.index;
       const endPos = beginPos + targetText.length;
+      const annotations = match[2].split(', ');
 
-      const obj = this.#getObjFor(label);
+      switch (annotations.length) {
+        case 1:
+          const obj = this.#getObjFor(annotations[0]);
+          this.#denotations.push(new Denotation(beginPos, endPos, obj));
 
-      this.#denotations.push(new Denotation(beginPos, endPos, obj));
-
-      fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
+          fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
+          break;
+        case 2:
+          break;
+        case 4:
+          break;
+        default:
+          return "skipped";
+      }
     }
 
     return fullText;
