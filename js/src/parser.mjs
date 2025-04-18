@@ -47,7 +47,7 @@ class Parser {
 
   #processDenotations(fullText) {
     const regex = new RegExp(DENOTATION_PATTERN, 'g');
-    let match, obj, label, id, subj, pred, obj2;
+    let match;
 
     while ((match = regex.exec(fullText)) !== null) {
       const targetText = match[1];
@@ -57,21 +57,15 @@ class Parser {
 
       switch (annotations.length) {
         case 1:
-          obj = this.#getObjFor(annotations[0]);
-          this.#denotations.push(new Denotation(beginPos, endPos, obj));
+          this.#processSingleAnnotation(beginPos, endPos, annotations);
           break;
 
         case 2:
-          [id, label] = annotations;
-          obj = this.#getObjFor(label);
-          this.#denotations.push(new Denotation(beginPos, endPos, obj, id));
+          this.#processDoubleAnnotation(beginPos, endPos, annotations);
           break;
 
         case 4:
-          [subj, label, pred, obj2] = annotations;
-          obj = this.#getObjFor(label);
-          this.#denotations.push(new Denotation(beginPos, endPos, obj, subj));
-          this.#relations.push({ pred: pred, subj: subj, obj: obj2 });
+          this.#processRelationAnnotation(beginPos, endPos, annotations);
           break;
 
         default:
@@ -84,6 +78,24 @@ class Parser {
     }
 
     return fullText;
+  }
+
+  #processSingleAnnotation(beginPos, endPos, annotations) {
+    const obj = this.#getObjFor(annotations[0]);
+    this.#denotations.push(new Denotation(beginPos, endPos, obj));
+  }
+
+  #processDoubleAnnotation(beginPos, endPos, annotations) {
+    const [id, label] = annotations;
+    const obj = this.#getObjFor(label);
+    this.#denotations.push(new Denotation(beginPos, endPos, obj, id));
+  }
+
+  #processRelationAnnotation(beginPos, endPos, annotations) {
+    const [subj, label, pred, obj2] = annotations;
+    const obj = this.#getObjFor(label);
+    this.#denotations.push(new Denotation(beginPos, endPos, obj, subj));
+    this.#relations.push({ pred, subj, obj: obj2 });
   }
 }
 
