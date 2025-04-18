@@ -48,6 +48,7 @@ class Parser {
   #processDenotations(fullText) {
     const regex = new RegExp(DENOTATION_PATTERN, 'g');
     let match;
+    let obj;
 
     while ((match = regex.exec(fullText)) !== null) {
       const targetText = match[1];
@@ -57,18 +58,24 @@ class Parser {
 
       switch (annotations.length) {
         case 1:
-          const obj = this.#getObjFor(annotations[0]);
+          obj = this.#getObjFor(annotations[0]);
           this.#denotations.push(new Denotation(beginPos, endPos, obj));
 
-          fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
           break;
         case 2:
+          const [id, label] = annotations;
+          obj = this.#getObjFor(label);
+
+          this.#denotations.push(new Denotation(beginPos, endPos, obj, id));
           break;
         case 4:
+
           break;
         default:
           return "skipped";
       }
+
+      fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
     }
 
     return fullText;
