@@ -59,23 +59,24 @@ class Parser {
         case 1:
           obj = this.#getObjFor(annotations[0]);
           this.#denotations.push(new Denotation(beginPos, endPos, obj));
-
           break;
+
         case 2:
           [id, label] = annotations;
           obj = this.#getObjFor(label);
-
           this.#denotations.push(new Denotation(beginPos, endPos, obj, id));
           break;
+
         case 4:
           [subj, label, pred, obj2] = annotations;
           obj = this.#getObjFor(label);
           this.#denotations.push(new Denotation(beginPos, endPos, obj, subj));
           this.#relations.push({ pred: pred, subj: subj, obj: obj2 });
-
           break;
+
         default:
-          return "skipped";
+          regex.lastIndex = endPos;
+          continue;
       }
 
       fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
