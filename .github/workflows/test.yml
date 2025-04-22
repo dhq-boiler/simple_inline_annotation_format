@@ -7,11 +7,15 @@ on:
         description: 'Ruby version to use'
         required: true
         type: string
+      node-version:
+        description: 'Node.js version to use'
+        required: true
+        type: string
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Ruby ${{ inputs.ruby-version }}
+    name: Ruby ${{ inputs.ruby-version }} and NPM ${{ inputs.node-version }}
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +26,7 @@ jobs:
           ruby-version: ${{ inputs.ruby-version }}
           bundler-cache: true
 
-      - name: Install dependencies
+      - name: Install Ruby dependencies
         run: |
           cd ruby
           bundle install
@@ -36,3 +40,18 @@ jobs:
         run: |
           cd ruby
           bundle exec rspec
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install NPM dependencies
+        run: |
+          cd js
+          npm ci
+
+      - name: Run NPM tests
+        run: |
+          cd js
+          npm run test:ci
