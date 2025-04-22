@@ -55,6 +55,8 @@ class Parser {
       const endPos = beginPos + targetText.length;
       const annotations = match[2].split(', ');
 
+      regex.lastIndex = endPos;
+
       switch (annotations.length) {
         case 1:
           this.#processSingleAnnotation(beginPos, endPos, annotations);
@@ -69,12 +71,10 @@ class Parser {
           break;
 
         default:
-          regex.lastIndex = endPos;
           continue;
       }
 
       fullText = fullText.slice(0, match.index) + targetText + fullText.slice(match.index + match[0].length);
-      regex.lastIndex = endPos;
     }
 
     return fullText;
