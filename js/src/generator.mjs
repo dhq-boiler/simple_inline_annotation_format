@@ -24,7 +24,7 @@ class Generator {
 
   #buildDenotations(denotations) {
     return denotations.map(
-      (d) => new Denotation(d.span.begin, d.span.end, d.obj)
+      (d) => new Denotation(d.span.begin, d.span.end, d.obj, d.id || null)
     );
   }
 
@@ -35,9 +35,9 @@ class Generator {
       .forEach((denotation) => {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
-        const obj = this.#getObj(denotation.obj);
+        const annotations = this.#getAnnotations(denotation.obj, denotation.id || null);
 
-        const annotatedText = `[${text.slice(beginPos, endPos)}][${obj}]`;
+        const annotatedText = `[${text.slice(beginPos, endPos)}][${annotations}]`;
         text = text.slice(0, beginPos) + annotatedText + text.slice(endPos);
       });
 
@@ -67,11 +67,21 @@ class Generator {
     );
   }
 
-  #getObj(obj) {
+  #getAnnotations(obj, id) {
+    const relations = this.source.relations || [];
+    const relation = relations.find((relation) => relation.subj === id) || null;
+    const annotations = [id, obj, relation?.pred, relation?.obj];
+
     if (!this.#labeledEntityTypes()) {
-      return obj;
+      return annotations.filter((item) => item !== null && item !== undefined).join(', ');
     }
 
+    annotations[1] = this.#findEntityLabel(obj)
+    const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
+    return annotations.filter((item) => item !== null && item !== undefined).join(', ');
+  }
+
+  #findEntityLabel(obj) {
     const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
     return entity ? entity.label : obj;
   }
