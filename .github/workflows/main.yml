@@ -1,4 +1,4 @@
-name: Ruby
+name: Ruby and NPM CI
 
 on:
   push:
