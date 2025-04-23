@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Run Tests
-        uses: ./.github/workflows/test.yml
+        uses: ./.github/workflows/ruby_test.yml
         with:
           ruby-version: '3.4.2'
 

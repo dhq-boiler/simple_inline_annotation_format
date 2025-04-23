@@ -1,4 +1,4 @@
-name: Test Workflow
+name: Ruby Test
 
 on:
   workflow_call:
@@ -22,7 +22,7 @@ jobs:
           ruby-version: ${{ inputs.ruby-version }}
           bundler-cache: true
 
-      - name: Install dependencies
+      - name: Install Ruby dependencies
         run: |
           cd ruby
           bundle install
