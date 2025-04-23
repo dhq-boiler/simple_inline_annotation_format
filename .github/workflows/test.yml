@@ -54,4 +54,4 @@ jobs:
       - name: Run NPM tests
         run: |
           cd js
-          npm run test:ci
+          npm run test
