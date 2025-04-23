@@ -1,0 +1,32 @@
+name: NPM Test
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version to use'
+        required: true
+        type: string
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: NPM ${{ inputs.node-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install NPM dependencies
+        run: |
+          cd js
+          npm ci
+
+      - name: Run NPM tests
+        run: |
+          cd js
+          npm run test
