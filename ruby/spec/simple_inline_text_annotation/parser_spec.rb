@@ -354,6 +354,45 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
     end
 
+    context "when there are three consecutive brackets" do
+      context "and the second bracket has a valid number of elements" do
+        let(:source) do
+          "[Elon Musk][T1, Person, member_of, T2][Fuga] is a member of the PayPal Mafia."
+        end
+        let(:expected_format) do
+          {
+            "text": "Elon Musk[Fuga] is a member of the PayPal Mafia.",
+            "denotations": [
+              { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+            ],
+            "relations": [
+              { "pred": "member_of", "subj": "T1", "obj": "T2" }
+            ]
+          }
+        end
+
+        it "processes the second bracket and ignores the third bracket" do
+          is_expected.to eq(expected_format)
+        end
+      end
+
+      context "and the second bracket has an invalid number of elements" do
+        let(:source) do
+          "[Elon Musk][T1, Person, member_of, T2, Hoge][Fuga] is a member of the PayPal Mafia."
+        end
+        let(:expected_format) do
+          {
+            "text": "[Elon Musk][T1, Person, member_of, T2, Hoge][Fuga] is a member of the PayPal Mafia.",
+            "denotations": []
+          }
+        end
+
+        it "skips the second bracket and ignores the third bracket" do
+          is_expected.to eq(expected_format)
+        end
+      end
+    end
+
     context "when parse is called multiple times" do
       let(:source) do
         <<~MD
