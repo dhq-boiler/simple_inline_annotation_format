@@ -7,7 +7,7 @@ class SimpleInlineTextAnnotation
   class Parser
     # DENOTATION_PATTERN matches two consecutive pairs of square brackets.
     # Example: [Annotated Text][Label]
-    DENOTATION_PATTERN = /(?<!\\)\[([^\[]+?)\]\[([^\]]+?)\]/
+    ANNOTATION_PATTERN = /(?<!\\)\[([^\[]+?)\]\[([^\]]+?)\]/
 
     def initialize(source)
       @source = source.dup.freeze
@@ -19,7 +19,7 @@ class SimpleInlineTextAnnotation
       @relations = []
       full_text = source_without_references
 
-      process_denotations(full_text)
+      process_annotations(full_text)
 
       SimpleInlineTextAnnotation.new(
         full_text,
@@ -42,50 +42,51 @@ class SimpleInlineTextAnnotation
       @entity_type_collection.get(label) || label
     end
 
-    def process_denotations(full_text)
-      pos = 0
+    def process_annotations(full_text)
+      current_pos = 0
 
-      while (match = DENOTATION_PATTERN.match(full_text, pos))
-        result = process_single_denotation(match, full_text)
-        pos = result == :processed ? match.begin(0) + match[1].length : match.end(0)
+      while (match = ANNOTATION_PATTERN.match(full_text, current_pos))
+        result = process_single_annotation(match, full_text)
+        current_pos = result == :processed ? match.begin(0) + match[1].length : match.end(0)
       end
     end
 
-    def process_single_denotation(match, full_text)
+    def process_single_annotation(match, full_text)
       target_text = match[1]
       begin_pos = match.begin(0)
       end_pos = begin_pos + target_text.length
-      annotations = match[2].split(", ")
 
-      return :skipped unless process_annotation_by_size(annotations, begin_pos, end_pos)
+      return :skipped unless process_annotation_by_size(match[2], begin_pos, end_pos)
 
       full_text[match.begin(0)...match.end(0)] = target_text
       :processed
     end
 
     def process_annotation_by_size(annotations, begin_pos, end_pos)
-      case annotations.size
+      annotations_array = annotations.split(", ")
+
+      case annotations_array.size
       when 1
-        process_single_annotation(begin_pos, end_pos, annotations[0])
+        process_denotation(begin_pos, end_pos, annotations_array[0])
       when 2
-        process_double_annotation(begin_pos, end_pos, annotations)
+        process_denotation_with_id(begin_pos, end_pos, annotations_array)
       when 4
-        process_quadruple_annotation(begin_pos, end_pos, annotations)
+        process_denotation_and_relation(begin_pos, end_pos, annotations_array)
       end
     end
 
-    def process_single_annotation(begin_pos, end_pos, label)
+    def process_denotation(begin_pos, end_pos, label)
       obj = get_obj_for(label)
       @denotations << Denotation.new(begin_pos, end_pos, obj)
     end
 
-    def process_double_annotation(begin_pos, end_pos, annotations)
+    def process_denotation_with_id(begin_pos, end_pos, annotations)
       id, label = annotations
       obj = get_obj_for(label)
       @denotations << Denotation.new(begin_pos, end_pos, obj, id)
     end
 
-    def process_quadruple_annotation(begin_pos, end_pos, annotations)
+    def process_denotation_and_relation(begin_pos, end_pos, annotations)
       subj, label, pred, obj2 = annotations
       obj = get_obj_for(label)
       @denotations << Denotation.new(begin_pos, end_pos, obj, subj)
