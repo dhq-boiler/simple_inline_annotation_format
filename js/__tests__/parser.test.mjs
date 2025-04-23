@@ -237,6 +237,31 @@ Elon Musk is a member of the PayPal Mafia.`;
     };
     expect(SimpleInlineTextAnnotation.parse(source)).toStrictEqual(expected);
   });
+
+  describe('when there are three consecutive brackets', () => {
+    it('should process valid annotations and ignore the third bracket', () => {
+      const source = "[Elon Musk][T1, Person, member_of, T2][Piyo] is a member of the PayPal Mafia.";
+      const expected = {
+        text: "Elon Musk[Piyo] is a member of the PayPal Mafia.",
+        denotations: [
+          { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" }
+        ],
+        relations: [
+          { pred: "member_of", subj: "T1", obj: "T2" }
+        ]
+      };
+      expect(SimpleInlineTextAnnotation.parse(source)).toStrictEqual(expected);
+    });
+
+    it('should skip invalid annotations and ignore the third bracket', () => {
+      const source = "[Elon Musk][T1, Person, member_of, T2, Hoge][Piyo] is a member of the PayPal Mafia.";
+      const expected = {
+        text: "[Elon Musk][T1, Person, member_of, T2, Hoge][Piyo] is a member of the PayPal Mafia.",
+        denotations: []
+      };
+      expect(SimpleInlineTextAnnotation.parse(source)).toStrictEqual(expected);
+    });
+  });
 });
 
 describe('Parser', () => {
