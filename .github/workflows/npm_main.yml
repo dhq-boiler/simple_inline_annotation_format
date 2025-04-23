@@ -1,15 +1,18 @@
-name: Ruby and NPM CI
+name: NPM
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'js/**'
 
   pull_request:
+    paths:
+      - 'js/**'
 
 jobs:
   test:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/npm_test.yml
     with:
-      ruby-version: '3.4.2'
       node-version: '20'
