@@ -11,11 +11,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Run Tests
-        uses: ./.github/workflows/npm_test.yml
-        with:
-          node-version: '20'
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -29,6 +24,11 @@ jobs:
         run: |
           cd js
           npm ci
+
+      - name: Run Tests
+        uses: ./.github/workflows/npm_test.yml
+        with:
+          node-version: '20'
 
       - name: Publish to npm
         env:
