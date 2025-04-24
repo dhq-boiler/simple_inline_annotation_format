@@ -33,15 +33,23 @@ class SimpleInlineTextAnnotation
     def annotate_text(text, denotations)
       # Annotate text from the end to ensure position calculation.
       denotations.sort_by(&:begin_pos).reverse_each do |denotation|
-        begin_pos = denotation.begin_pos
-        end_pos = denotation.end_pos
-        annotations = get_annotations(denotation.obj, denotation.id)
-
-        annotated_text = "[#{text[begin_pos...end_pos]}][#{annotations}]"
-        text = text[0...begin_pos] + annotated_text + text[end_pos..]
+        text = annotate_text_with_denotation(text, denotation)
       end
 
       text
+    end
+
+    def annotate_text_with_denotation(text, denotation)
+      begin_pos = denotation.begin_pos
+      end_pos = denotation.end_pos
+      annotation = if denotation.id && !denotation.id.empty?
+                     get_annotations(denotation.obj, denotation.id)
+                   else
+                     get_obj(denotation.obj)
+                   end
+
+      annotated_text = "[#{text[begin_pos...end_pos]}][#{annotation}]"
+      text[0...begin_pos] + annotated_text + text[end_pos..]
     end
 
     def labeled_entity_types
@@ -57,11 +65,13 @@ class SimpleInlineTextAnnotation
 
       return annotations.compact.join(", ") unless labeled_entity_types
 
-      annotations[1] = find_entity_label(obj)
+      annotations[1] = get_obj(obj)
       annotations.compact.join(", ")
     end
 
-    def find_entity_label(obj)
+    def get_obj(obj)
+      return obj unless labeled_entity_types
+
       entity = labeled_entity_types.find { |entity_type| entity_type["id"] == obj }
       entity ? entity["label"] : obj
     end
