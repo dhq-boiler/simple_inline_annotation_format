@@ -51,8 +51,8 @@ class SimpleInlineTextAnnotation
     end
 
     def get_annotations(obj, id)
-      relations = @source["relations"]
-      relation = relations&.find { |rel| rel["subj"] == id }
+      relations = @source["relations"] || []
+      relation = relations.find { |rel| rel["subj"] == id }
       annotations = [id, obj, relation&.dig("pred"), relation&.dig("obj")]
 
       return annotations.compact.join(", ") unless labeled_entity_types
