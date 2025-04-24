@@ -55,13 +55,13 @@ class SimpleInlineTextAnnotation
       begin_pos = match.begin(0)
       end_pos = begin_pos + target_text.length
 
-      return match.end(0) unless process_annotation_by_size(match[2], begin_pos, end_pos)
+      return match.end(0) unless process_annotation(match[2], begin_pos, end_pos)
 
       full_text[match.begin(0)...match.end(0)] = target_text
       end_pos
     end
 
-    def process_annotation_by_size(annotations, begin_pos, end_pos)
+    def process_annotation(annotations, begin_pos, end_pos)
       annotations_array = annotations.split(", ")
 
       case annotations_array.size
