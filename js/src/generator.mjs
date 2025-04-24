@@ -35,9 +35,11 @@ class Generator {
       .forEach((denotation) => {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
-        const annotations = this.#getAnnotations(denotation.obj, denotation.id || null);
+        const annotation = denotation.id
+          ? this.#getAnnotations(denotation.obj, denotation.id)
+          : this.#getObj(denotation.obj);
 
-        const annotatedText = `[${text.slice(beginPos, endPos)}][${annotations}]`;
+        const annotatedText = `[${text.slice(beginPos, endPos)}][${annotation}]`;
         text = text.slice(0, beginPos) + annotatedText + text.slice(endPos);
       });
 
@@ -76,12 +78,16 @@ class Generator {
       return annotations.filter((item) => item !== null && item !== undefined).join(', ');
     }
 
-    annotations[1] = this.#findEntityLabel(obj)
+    annotations[1] = this.#getObj(obj)
     const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
     return annotations.filter((item) => item !== null && item !== undefined).join(', ');
   }
 
-  #findEntityLabel(obj) {
+  #getObj(obj) {
+    if (!this.#labeledEntityTypes()) {
+      return obj;
+    }
+
     const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
     return entity ? entity.label : obj;
   }
