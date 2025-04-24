@@ -46,20 +46,19 @@ class SimpleInlineTextAnnotation
       current_pos = 0
 
       while (match = ANNOTATION_PATTERN.match(full_text, current_pos))
-        result = process_single_annotation(match, full_text)
-        current_pos = result == :processed ? match.begin(0) + match[1].length : match.end(0)
+        current_pos = process_annotation_and_update_position(match, full_text)
       end
     end
 
-    def process_single_annotation(match, full_text)
+    def process_annotation_and_update_position(match, full_text)
       target_text = match[1]
       begin_pos = match.begin(0)
       end_pos = begin_pos + target_text.length
 
-      return :skipped unless process_annotation_by_size(match[2], begin_pos, end_pos)
+      return match.end(0) unless process_annotation_by_size(match[2], begin_pos, end_pos)
 
       full_text[match.begin(0)...match.end(0)] = target_text
-      :processed
+      match.begin(0) + match[1].length
     end
 
     def process_annotation_by_size(annotations, begin_pos, end_pos)
