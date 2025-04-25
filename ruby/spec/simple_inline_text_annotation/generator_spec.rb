@@ -316,8 +316,8 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         end
       end
 
-      context "when relation pred or obj is missing" do
-        context "when pred and obj are missing" do
+      context "when relation keys are missing" do
+        context "when subj is missing" do
           let(:source) do
             {
               "text" => "Elon Musk is a member of the PayPal Mafia.",
@@ -326,7 +326,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
                 { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
               ],
               "relations" => [
-                { "subj" => "T1" }
+                { "pred" => "member_of", "obj" => "T2" }
               ]
             }
           end
