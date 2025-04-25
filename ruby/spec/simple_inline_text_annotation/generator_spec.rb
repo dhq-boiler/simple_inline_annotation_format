@@ -87,16 +87,26 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
       end
     end
 
+    context "when denotation is missing" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => []
+        }
+      end
+      let(:expected_format) { "Elon Musk is a member of the PayPal Mafia." }
+
+      it "does not generate any denotation" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
     context "when span value is not integer" do
       let(:source) do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 0.1, "end" => 9.6 }, "obj" => "Person" },
-            { "id" => "T2", "span" => { "begin" => "0", "end" => "9" }, "obj" => "Organization" }
-          ],
-          "relations" => [
-            { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+            { "id" => "T1", "span" => { "begin" => 0.1, "end" => 9.6 }, "obj" => "Person" }
           ]
         }
       end
@@ -156,9 +166,6 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
             "denotations" => [
               { "id" => "T1", "span" => { "begin" => 0, "end" => 4 }, "obj" => "First name" },
               { "id" => "T2", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
-            ],
-            "relations" => [
-              { "subj" => "T1", "pred" => "part_of", "obj" => "T2" }
             ]
           }
         end
@@ -176,9 +183,6 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
             "denotations" => [
               { "id" => "T1", "span" => { "begin" => 6, "end" => 9 }, "obj" => "Last name" },
               { "id" => "T2", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
-            ],
-            "relations" => [
-              { "subj" => "T1", "pred" => "part_of", "obj" => "T2" }
             ]
           }
         end
@@ -197,9 +201,6 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
           "denotations" => [
             { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
             { "id" => "T2", "span" => { "begin" => 8, "end" => 11 }, "obj" => "Organization" }
-          ],
-          "relations" => [
-            { "subj" => "T1", "pred" => "part_of", "obj" => "T2" }
           ]
         }
       end
@@ -216,9 +217,6 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
             { "id" => "T1", "span" => { "begin" => -1, "end" => 9 }, "obj" => "Person" }
-          ],
-          "relations" => [
-            { "subj" => "T1", "pred" => "part_of", "obj" => "T2" }
           ]
         }
       end
@@ -264,6 +262,123 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
 
       it "should be ignored" do
         is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when denotation is invalid and relation is exist" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0.1, "end" => 9.6 }, "obj" => "Person" }
+          ],
+          "relations" => [
+            { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+          ]
+        }
+      end
+
+      let(:expected_format) { "Elon Musk is a member of the PayPal Mafia." }
+
+      it "ignores the invalid denotation and its relation" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when subject is invalid" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
+          ],
+          "relations" => [
+            { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+          ]
+        }
+      end
+      let(:expected_format) { "Elon Musk is a member of the [PayPal Mafia][T2, Organization]." }
+
+      it "does not generate the relation due to invalid subject" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when both subject and object are invalid" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [],
+          "relations" => [
+            { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+          ]
+        }
+      end
+      let(:expected_format) { "Elon Musk is a member of the PayPal Mafia." }
+
+      it "does not generate the relation due to both invalid subject and object" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when relation pred or obj is missing" do
+      context "when pred and obj are missing" do
+        let(:source) do
+          {
+            "text" => "Elon Musk is a member of the PayPal Mafia.",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+              { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
+            ],
+            "relations" => [
+              { "subj" => "T1" }
+            ]
+          }
+        end
+        let(:expected_format) { "[Elon Musk][T1, Person] is a member of the [PayPal Mafia][T2, Organization]." }
+
+        it "does not generate the relation" do
+          is_expected.to eq(expected_format)
+        end
+      end
+
+      context "when pred is missing" do
+        let(:source) do
+          {
+            "text" => "Elon Musk is a member of the PayPal Mafia.",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+              { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
+            ],
+            "relations" => [
+              { "subj" => "T1", "obj" => "T2" }
+            ]
+          }
+        end
+        let(:expected_format) { "[Elon Musk][T1, Person] is a member of the [PayPal Mafia][T2, Organization]." }
+
+        it "does not generate the relation" do
+          is_expected.to eq(expected_format)
+        end
+      end
+
+      context "when obj is missing" do
+        let(:source) do
+          {
+            "text" => "Elon Musk is a member of the PayPal Mafia.",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
+            ],
+            "relations" => [
+              { "subj" => "T1", "pred" => "member_of" }
+            ]
+          }
+        end
+        let(:expected_format) { "[Elon Musk][T1, Person] is a member of the PayPal Mafia." }
+
+        it "does not generate the relation" do
+          is_expected.to eq(expected_format)
+        end
       end
     end
 
