@@ -2,7 +2,7 @@
 
 class SimpleInlineTextAnnotation
   module DenotationValidator
-    def validate(denotations, text_length)
+    def validate_denotations(denotations, text_length)
       result = remove_duplicates_from(denotations)
       result = remove_non_integer_positions_from(result)
       result = remove_negative_positions_from(result)
