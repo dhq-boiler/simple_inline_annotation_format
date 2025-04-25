@@ -1,6 +1,7 @@
 import Denotation from './denotation.mjs';
 import DenotationValidator from './denotation_validator.mjs';
 import GeneratorError from './generator_error.mjs';
+import RelationValidator from './relation_validator.mjs';
 
 class Generator {
   constructor(source) {
@@ -15,7 +16,7 @@ class Generator {
       throw new GeneratorError('The "text" key is missing.');
     }
 
-    const denotations =  new DenotationValidator().validate(this.denotations, text.length);
+    const denotations =  new DenotationValidator().validateDenotations(this.denotations, text.length);
     const annotatedText = this.#annotateText(text, denotations);
     const labelDefinitions = this.#buildLabelDefinitions();
 
@@ -70,7 +71,7 @@ class Generator {
   }
 
   #getAnnotations(denotation) {
-    const relations = this.source.relations || [];
+    const relations = new RelationValidator().validateRelations(this.source.relations || []);
     const relation = relations.find((relation) => relation.subj === denotation.id) || null;
     const annotations = [denotation.id, denotation.obj, relation?.pred, relation?.obj];
 
