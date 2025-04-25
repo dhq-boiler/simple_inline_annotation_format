@@ -43,7 +43,7 @@ class SimpleInlineTextAnnotation
       begin_pos = denotation.begin_pos
       end_pos = denotation.end_pos
       annotation = if denotation.id && !denotation.id.empty?
-                     get_annotations(denotation.obj, denotation.id)
+                     get_annotations(denotation)
                    else
                      get_obj(denotation.obj)
                    end
@@ -58,14 +58,14 @@ class SimpleInlineTextAnnotation
       @config["entity types"]&.select { |entity_type| entity_type.key?("label") }
     end
 
-    def get_annotations(obj, id)
+    def get_annotations(denotation)
       relations = @source["relations"] || []
-      relation = relations.find { |rel| rel["subj"] == id }
-      annotations = [id, obj, relation&.dig("pred"), relation&.dig("obj")]
+      relation = relations.find { |rel| rel["subj"] == denotation.id }
+      annotations = [denotation.id, denotation.obj, relation&.dig("pred"), relation&.dig("obj")]
 
       return annotations.compact.join(", ") unless labeled_entity_types
 
-      annotations[1] = get_obj(obj)
+      annotations[1] = get_obj(denotation.obj)
       annotations.compact.join(", ")
     end
 
