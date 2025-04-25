@@ -59,14 +59,18 @@ class SimpleInlineTextAnnotation
     end
 
     def get_annotations(denotation)
-      relations = @source["relations"] || []
-      relation = relations.find { |rel| rel["subj"] == denotation.id }
+      relation = find_valid_relation(denotation.id)
       annotations = [denotation.id, denotation.obj, relation&.dig("pred"), relation&.dig("obj")]
 
       return annotations.compact.join(", ") unless labeled_entity_types
 
       annotations[1] = get_obj(denotation.obj)
       annotations.compact.join(", ")
+    end
+
+    def find_valid_relation(denotation_id)
+      relations = @source["relations"] || []
+      relations.find { |rel| rel["subj"] == denotation_id && rel["obj"] && rel["pred"] }
     end
 
     def get_obj(obj)
