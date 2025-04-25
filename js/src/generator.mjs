@@ -36,7 +36,7 @@ class Generator {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
         const annotation = denotation.id
-          ? this.#getAnnotations(denotation.obj, denotation.id)
+          ? this.#getAnnotations(denotation)
           : this.#getObj(denotation.obj);
 
         const annotatedText = `[${text.slice(beginPos, endPos)}][${annotation}]`;
@@ -69,17 +69,17 @@ class Generator {
     );
   }
 
-  #getAnnotations(obj, id) {
+  #getAnnotations(denotation) {
     const relations = this.source.relations || [];
-    const relation = relations.find((relation) => relation.subj === id) || null;
-    const annotations = [id, obj, relation?.pred, relation?.obj];
+    const relation = relations.find((relation) => relation.subj === denotation.id) || null;
+    const annotations = [denotation.id, denotation.obj, relation?.pred, relation?.obj];
 
     if (!this.#labeledEntityTypes()) {
       return annotations.filter((item) => item !== null && item !== undefined).join(', ');
     }
 
-    annotations[1] = this.#getObj(obj)
-    const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === obj);
+    annotations[1] = this.#getObj(denotation.obj)
+    const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === denotation.obj);
     return annotations.filter((item) => item !== null && item !== undefined).join(', ');
   }
 
