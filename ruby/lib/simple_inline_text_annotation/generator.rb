@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require_relative "denotation"
+require_relative "relation_validator"
 
 class SimpleInlineTextAnnotation
   class Generator
     include DenotationValidator
+    include RelationValidator
 
     def initialize(source)
       @source = source.dup.freeze
@@ -16,7 +18,7 @@ class SimpleInlineTextAnnotation
       text = @source["text"]
       raise SimpleInlineTextAnnotation::GeneratorError, 'The "text" key is missing.' if text.nil?
 
-      denotations = validate(@denotations, text.length)
+      denotations = validate_denotations(@denotations, text.length)
 
       annotated_text = annotate_text(text, denotations)
       label_definitions = build_label_definitions
@@ -69,8 +71,8 @@ class SimpleInlineTextAnnotation
     end
 
     def find_valid_relation(denotation_id)
-      relations = @source["relations"] || []
-      relations.find { |rel| rel["subj"] == denotation_id && rel["obj"] && rel["pred"] }
+      relations = validate_relations(@source["relations"] || [])
+      relations.find { |rel| rel["subj"] == denotation_id }
     end
 
     def get_obj(obj)
