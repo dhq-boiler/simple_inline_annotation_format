@@ -59,15 +59,20 @@ describe('SimpleInlineTextAnnotation.generate', () => {
     expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
   });
 
+  test('should not generate any denotation when denotation is missing', () => {
+    const source = {
+      text: "Elon Musk is a member of the PayPal Mafia.",
+      denotations: []
+    };
+    const expected = "Elon Musk is a member of the PayPal Mafia.";
+    expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+  });
+
   test('should not parse as annotation when span value is not integer', () => {
     const source = {
       text: "Elon Musk is a member of the PayPal Mafia.",
       denotations: [
         { id: "T1", span: { begin: 0.1, end: 9.6 }, obj: "Person" },
-        { id: "T2", span: { begin: "0", end: "9" }, obj: "Organization" }
-      ],
-      relations: [
-        { pred: "member_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
@@ -80,12 +85,9 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       denotations: [
         { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" },
         { id: "T2", span: { begin: 0, end: 9 }, obj: "Organization" }
-      ],
-      relations: [
-        { pred: "member_of", subj: "T1", obj: "T2" }
       ]
     };
-    const expected = "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia.";
+    const expected = "[Elon Musk][T1, Person] is a member of the PayPal Mafia.";
     expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
   });
 
@@ -95,12 +97,9 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       denotations: [
         { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" },
         { id: "T2", span: { begin: 2, end: 6 }, obj: "Organization" }
-      ],
-      relations: [
-        { pred: "member_of", subj: "T1", obj: "T2" }
       ]
     };
-    const expected = "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia.";
+    const expected = "[Elon Musk][T1, Person] is a member of the PayPal Mafia.";
     expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
   });
 
@@ -110,9 +109,6 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       denotations: [
         { id: "T1", span: { begin: 0, end: 4 }, obj: "First name" },
         { id: "T2", span: { begin: 0, end: 9 }, obj: "Full name" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "[Elon Musk][T2, Full name] is a member of the PayPal Mafia.";
@@ -125,9 +121,6 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       denotations: [
         { id: "T1", span: { begin: 6, end: 9 }, obj: "Last name" },
         { id: "T2", span: { begin: 0, end: 9 }, obj: "Full name" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "[Elon Musk][T2, Full name] is a member of the PayPal Mafia.";
@@ -140,9 +133,6 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       denotations: [
         { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" },
         { id: "T2", span: { begin: 8, end: 11 }, obj: "Organization" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
@@ -154,9 +144,6 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       text: "Elon Musk is a member of the PayPal Mafia.",
       denotations: [
         { id: "T1", span: { begin: -1, end: 9 }, obj: "Person" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
@@ -168,9 +155,6 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       text: "Elon Musk is a member of the PayPal Mafia.",
       denotations: [
         { id: "T1", span: { begin: 4, end: 0 }, obj: "Person" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
@@ -182,13 +166,96 @@ describe('SimpleInlineTextAnnotation.generate', () => {
       text: "Elon Musk is a member of the PayPal Mafia.",
       denotations: [
         { id: "T1", span: { begin: 100, end: 200 }, obj: "Person" }
-      ],
-      relations: [
-        { pred: "part_of", subj: "T1", obj: "T2" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
     expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+  });
+
+  describe('with relation', () => {
+    test('should ignore the invalid denotation and its relation when denotation is invalid and relation exists', () => {
+      const source = {
+      text: "Elon Musk is a member of the PayPal Mafia.",
+        denotations: [
+          { id: "T1", span: { begin: 0.1, end: 9.6 }, obj: "Person" }
+        ],
+        relations: [
+          { pred: "member_of", subj: "T1", obj: "T2" }
+        ]
+      };
+      const expected = "Elon Musk is a member of the PayPal Mafia.";
+      expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+    });
+
+    test('should not generate the relation when denotation is invalid and relation exists due to invalid subject', () => {
+      const source = {
+        text: "Elon Musk is a member of the PayPal Mafia.",
+        denotations: [
+          { id: "T2", span: { begin: 29, end: 41 }, obj: "Organization" }
+        ],
+        relations: [
+          { subj: "T1", pred: "member_of", obj: "T2" }
+        ]
+      };
+      const expected = "Elon Musk is a member of the [PayPal Mafia][T2, Organization].";
+      expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+    });
+
+    test('should not generate the relation when both subject and object are invalid', () => {
+      const source = {
+        text: "Elon Musk is a member of the PayPal Mafia.",
+        denotations: [],
+        relations: [
+          { subj: "T1", pred: "member_of", obj: "T2" }
+        ]
+      };
+      const expected = "Elon Musk is a member of the PayPal Mafia.";
+      expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+    });
+
+    describe('when relation keys are missing', () => {
+      test('should not generate the relation when subj is missing', () => {
+        const source = {
+          text: "Elon Musk is a member of the PayPal Mafia.",
+          denotations: [
+            { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" }
+          ],
+          relations: [
+            { pred: "member_of", obj: "T2" }
+          ]
+        };
+        const expected = "[Elon Musk][T1, Person] is a member of the PayPal Mafia.";
+        expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+      });
+
+      test('should not generate the relation when obj is missing', () => {
+        const source = {
+          text: "Elon Musk is a member of the PayPal Mafia.",
+          denotations: [
+            { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" }
+          ],
+          relations: [
+            { subj: "T1", pred: "member_of" }
+          ]
+        };
+        const expected = "[Elon Musk][T1, Person] is a member of the PayPal Mafia.";
+        expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+      });
+
+      test('should not generate the relation when pred is missing', () =>{
+        const source = {
+          text: "Elon Musk is a member of the PayPal Mafia.",
+          denotations: [
+            { id: "T1", span: { begin: 0, end: 9 }, obj: "Person" }
+          ],
+          relations: [
+            { subj: "T1", obj: "T2" }
+          ]
+        };
+        const expected = "[Elon Musk][T1, Person] is a member of the PayPal Mafia.";
+        expect(SimpleInlineTextAnnotation.generate(source)).toBe(expected);
+      });
+    });
   });
 
   test('should throw GeneratorError when source text key is missing', () => {
