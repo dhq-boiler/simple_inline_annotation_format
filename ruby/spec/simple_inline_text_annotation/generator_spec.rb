@@ -55,6 +55,25 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
       end
     end
 
+    context "when source has denotations with ids but no relations" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
+          ]
+        }
+      end
+      let(:expected_format) do
+        "[Elon Musk][T1, Person] is a member of the [PayPal Mafia][T2, Organization]."
+      end
+
+      it "displays ids in annotations even without relations" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
     context "when source has denotations and relations" do
       let(:source) do
         {
@@ -155,7 +174,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 0.1, "end" => 9.6 }, "obj" => "Person" }
+            { "span" => { "begin" => 0.1, "end" => 9.6 }, "obj" => "Person" }
           ]
         }
       end
@@ -172,15 +191,12 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
-            { "id" => "T2", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Organization" }
-          ],
-          "relations" => [
-            { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+            { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+            { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Organization" }
           ]
         }
       end
-      let(:expected_format) { "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia." }
+      let(:expected_format) { "[Elon Musk][Person] is a member of the PayPal Mafia." }
 
       it "should use first denotation" do
         is_expected.to eq(expected_format)
@@ -193,15 +209,12 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
           {
             "text" => "Elon Musk is a member of the PayPal Mafia.",
             "denotations" => [
-              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
-              { "id" => "T2", "span" => { "begin" => 2, "end" => 6 }, "obj" => "Organization" }
-            ],
-            "relations" => [
-              { "subj" => "T1", "pred" => "member_of", "obj" => "T2" }
+              { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+              { "span" => { "begin" => 2, "end" => 6 }, "obj" => "Organization" }
             ]
           }
         end
-        let(:expected_format) { "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia." }
+        let(:expected_format) { "[Elon Musk][Person] is a member of the PayPal Mafia." }
 
         it "should use only outer denotation" do
           is_expected.to eq(expected_format)
@@ -213,12 +226,12 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
           {
             "text" => "Elon Musk is a member of the PayPal Mafia.",
             "denotations" => [
-              { "id" => "T1", "span" => { "begin" => 0, "end" => 4 }, "obj" => "First name" },
-              { "id" => "T2", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
+              { "span" => { "begin" => 0, "end" => 4 }, "obj" => "First name" },
+              { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
             ]
           }
         end
-        let(:expected_format) { "[Elon Musk][T2, Full name] is a member of the PayPal Mafia." }
+        let(:expected_format) { "[Elon Musk][Full name] is a member of the PayPal Mafia." }
 
         it "should use only outer denotation" do
           is_expected.to eq(expected_format)
@@ -230,12 +243,12 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
           {
             "text" => "Elon Musk is a member of the PayPal Mafia.",
             "denotations" => [
-              { "id" => "T1", "span" => { "begin" => 6, "end" => 9 }, "obj" => "Last name" },
-              { "id" => "T2", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
+              { "span" => { "begin" => 6, "end" => 9 }, "obj" => "Last name" },
+              { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Full name" }
             ]
           }
         end
-        let(:expected_format) { "[Elon Musk][T2, Full name] is a member of the PayPal Mafia." }
+        let(:expected_format) { "[Elon Musk][Full name] is a member of the PayPal Mafia." }
 
         it "should use only outer denotation" do
           is_expected.to eq(expected_format)
@@ -248,8 +261,8 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
-            { "id" => "T2", "span" => { "begin" => 8, "end" => 11 }, "obj" => "Organization" }
+            { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+            { "span" => { "begin" => 8, "end" => 11 }, "obj" => "Organization" }
           ]
         }
       end
@@ -265,7 +278,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => -1, "end" => 9 }, "obj" => "Person" }
+            { "span" => { "begin" => -1, "end" => 9 }, "obj" => "Person" }
           ]
         }
       end
@@ -281,7 +294,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "subj" => "T1", "span" => { "begin" => 4, "end" => 0 }, "obj" => "Person" }
+            { "span" => { "begin" => 4, "end" => 0 }, "obj" => "Person" }
           ]
         }
       end
@@ -297,7 +310,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 100, "end" => 200 }, "obj" => "Person" }
+            { "span" => { "begin" => 100, "end" => 200 }, "obj" => "Person" }
           ]
         }
       end
@@ -431,10 +444,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
       let(:source) do
         {
           "denotations" => [
-            { "id" => "T1", "span" => { "begin" => 4, "end" => 0 }, "obj" => "Person" }
-          ],
-          "relations" => [
-            { "subj" => "T1", "pred" => "part_of", "obj" => "T2" }
+            { "span" => { "begin" => 4, "end" => 0 }, "obj" => "Person" }
           ]
         }
       end
