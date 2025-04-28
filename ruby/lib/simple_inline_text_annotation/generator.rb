@@ -19,8 +19,9 @@ class SimpleInlineTextAnnotation
       raise SimpleInlineTextAnnotation::GeneratorError, 'The "text" key is missing.' if text.nil?
 
       denotations = validate_denotations(@denotations, text.length)
+      relations = validate_relations(@source["relations"] || [])
 
-      annotated_text = annotate_text(text, denotations)
+      annotated_text = annotate_text(text, denotations, relations)
       label_definitions = build_label_definitions
 
       [annotated_text, label_definitions].compact.join("\n\n")
@@ -32,20 +33,20 @@ class SimpleInlineTextAnnotation
       denotations.map { |d| Denotation.new(d["span"]["begin"], d["span"]["end"], d["obj"], d["id"]) }
     end
 
-    def annotate_text(text, denotations)
+    def annotate_text(text, denotations, relations)
       # Annotate text from the end to ensure position calculation.
       denotations.sort_by(&:begin_pos).reverse_each do |denotation|
-        text = annotate_text_with_denotation(text, denotation)
+        text = annotate_text_with_denotation(text, denotation, relations)
       end
 
       text
     end
 
-    def annotate_text_with_denotation(text, denotation)
+    def annotate_text_with_denotation(text, denotation, relations)
       begin_pos = denotation.begin_pos
       end_pos = denotation.end_pos
       annotation = if denotation.id && !denotation.id.empty?
-                     get_annotations(denotation)
+                     get_annotations(denotation, relations)
                    else
                      get_obj(denotation.obj)
                    end
@@ -60,19 +61,14 @@ class SimpleInlineTextAnnotation
       @config["entity types"]&.select { |entity_type| entity_type.key?("label") }
     end
 
-    def get_annotations(denotation)
-      relation = find_valid_relation(denotation.id)
+    def get_annotations(denotation, relations)
+      relation = relations.find { |rel| rel["subj"] == denotation.id }
       annotations = [denotation.id, denotation.obj, relation&.dig("pred"), relation&.dig("obj")]
 
       return annotations.compact.join(", ") unless labeled_entity_types
 
       annotations[1] = get_obj(denotation.obj)
       annotations.compact.join(", ")
-    end
-
-    def find_valid_relation(denotation_id)
-      relations = validate_relations(@source["relations"] || [])
-      relations.find { |rel| rel["subj"] == denotation_id }
     end
 
     def get_obj(obj)
