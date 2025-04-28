@@ -3,6 +3,39 @@ import Parser from '../src/parser.mjs';
 
 describe('SimpleInlineTextAnnotation.parse', () => {
   test('should parse as denotation when source has annotation structure', () => {
+    const source = "[Elon Musk][Person] is a member of the [PayPal Mafia][Organization].";
+    const expected = {
+      text: "Elon Musk is a member of the PayPal Mafia.",
+      denotations: [
+        { span: { begin: 0, end: 9 }, obj: "Person" },
+        { span: { begin: 29, end: 41 }, obj: "Organization" }
+      ]
+    };
+    expect(SimpleInlineTextAnnotation.parse(source)).toStrictEqual(expected);
+  });
+
+  test('should parse as entity types and apply id to denotation obj when source has reference structure', () => {
+    const source = `[Elon Musk][Person] is a member of the [PayPal Mafia][Organization].
+
+[Person]: https://example.com/Person
+[Organization]: https://example.com/Organization`;
+    const expected = {
+      text: "Elon Musk is a member of the PayPal Mafia.",
+      denotations: [
+        { span: { begin: 0, end: 9 }, obj: "https://example.com/Person" },
+        { span: { begin: 29, end: 41 }, obj: "https://example.com/Organization" }
+      ],
+      config: {
+        "entity types": [
+          { id: "https://example.com/Person", label: "Person" },
+          { id: "https://example.com/Organization", label: "Organization" }
+        ]
+      }
+    };
+    expect(SimpleInlineTextAnnotation.parse(source)).toStrictEqual(expected);
+  });
+
+  test('should parse as denotation when source has annotation structure', () => {
     const source = "[Elon Musk][T1, Person, member_of, T2] is a member of the [PayPal Mafia][T2, Organization].";
     const expected = {
       text: "Elon Musk is a member of the PayPal Mafia.",
@@ -266,7 +299,7 @@ Elon Musk is a member of the PayPal Mafia.`;
 
 describe('Parser', () => {
   test('should not accumulate denotations when parse is called multiple times', () => {
-    const source = `[Elon Musk][T1, Person, member_of, T2] is a member of the [PayPal Mafia][T2, Organization].
+    const source = `[Elon Musk][Person] is a member of the [PayPal Mafia][Organization].
 
 [Person]: https://example.com/Person
 [Organization]: https://example.com/Organization`;
@@ -276,8 +309,8 @@ describe('Parser', () => {
     const result = parser.parse().toObject();
 
     expect(result.denotations).toEqual([
-      { id: "T1", span: { begin: 0, end: 9 }, obj: "https://example.com/Person" },
-      { id: "T2", span: { begin: 29, end: 41 }, obj: "https://example.com/Organization" },
+      { span: { begin: 0, end: 9 }, obj: "https://example.com/Person" },
+      { span: { begin: 29, end: 41 }, obj: "https://example.com/Organization" },
     ]);
   });
 });
