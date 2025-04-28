@@ -309,7 +309,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
     end
 
     context "with relation" do
-      context "when denotation is invalid and relation is exist" do
+      context "when subject is invalid and relation exists" do
         let(:source) do
           {
             "text" => "Elon Musk is a member of the PayPal Mafia.",
@@ -343,12 +343,12 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         end
         let(:expected_format) { "Elon Musk is a member of the [PayPal Mafia][T2, Organization]." }
 
-        it "does not generate the relation due to invalid subject" do
+        it "does not generate the relation due to subject does not exist" do
           is_expected.to eq(expected_format)
         end
       end
 
-      context "when both subject and object are invalid" do
+      context "when both subject and object do not exist" do
         let(:source) do
           {
             "text" => "Elon Musk is a member of the PayPal Mafia.",
@@ -360,7 +360,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         end
         let(:expected_format) { "Elon Musk is a member of the PayPal Mafia." }
 
-        it "does not generate the relation due to both invalid subject and object" do
+        it "does not generate the relation because both subject and object do not exist" do
           is_expected.to eq(expected_format)
         end
       end
