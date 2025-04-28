@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require_relative "denotation"
+require_relative "relation_validator"
 
 class SimpleInlineTextAnnotation
   class Generator
     include DenotationValidator
+    include RelationValidator
 
     def initialize(source)
       @source = source.dup.freeze
@@ -16,9 +18,10 @@ class SimpleInlineTextAnnotation
       text = @source["text"]
       raise SimpleInlineTextAnnotation::GeneratorError, 'The "text" key is missing.' if text.nil?
 
-      denotations = validate(@denotations, text.length)
+      denotations = validate_denotations(@denotations, text.length)
+      relations = validate_relations(@source["relations"] || [])
 
-      annotated_text = annotate_text(text, denotations)
+      annotated_text = annotate_text(text, denotations, relations)
       label_definitions = build_label_definitions
 
       [annotated_text, label_definitions].compact.join("\n\n")
@@ -27,27 +30,45 @@ class SimpleInlineTextAnnotation
     private
 
     def build_denotations(denotations)
-      denotations.map { |d| Denotation.new(d["span"]["begin"], d["span"]["end"], d["obj"]) }
+      denotations.map { |d| Denotation.new(d["span"]["begin"], d["span"]["end"], d["obj"], d["id"]) }
     end
 
-    def annotate_text(text, denotations)
+    def annotate_text(text, denotations, relations)
       # Annotate text from the end to ensure position calculation.
       denotations.sort_by(&:begin_pos).reverse_each do |denotation|
-        begin_pos = denotation.begin_pos
-        end_pos = denotation.end_pos
-        obj = get_obj(denotation.obj)
-
-        annotated_text = "[#{text[begin_pos...end_pos]}][#{obj}]"
-        text = text[0...begin_pos] + annotated_text + text[end_pos..]
+        text = annotate_text_with_denotation(text, denotation, relations)
       end
 
       text
+    end
+
+    def annotate_text_with_denotation(text, denotation, relations)
+      begin_pos = denotation.begin_pos
+      end_pos = denotation.end_pos
+      annotation = if denotation.id && !denotation.id.empty?
+                     get_annotations(denotation, relations)
+                   else
+                     get_obj(denotation.obj)
+                   end
+
+      annotated_text = "[#{text[begin_pos...end_pos]}][#{annotation}]"
+      text[0...begin_pos] + annotated_text + text[end_pos..]
     end
 
     def labeled_entity_types
       return nil unless @config
 
       @config["entity types"]&.select { |entity_type| entity_type.key?("label") }
+    end
+
+    def get_annotations(denotation, relations)
+      relation = relations.find { |rel| rel["subj"] == denotation.id }
+      annotations = [denotation.id, denotation.obj, relation&.dig("pred"), relation&.dig("obj")]
+
+      return annotations.compact.join(", ") unless labeled_entity_types
+
+      annotations[1] = get_obj(denotation.obj)
+      annotations.compact.join(", ")
     end
 
     def get_obj(obj)
