@@ -17,7 +17,8 @@ class Generator {
     }
 
     const denotations =  new DenotationValidator().validateDenotations(this.denotations, text.length);
-    const annotatedText = this.#annotateText(text, denotations);
+    const relations = new RelationValidator().validateRelations(this.source.relations || []);
+    const annotatedText = this.#annotateText(text, denotations, relations);
     const labelDefinitions = this.#buildLabelDefinitions();
 
     return [annotatedText, labelDefinitions].filter(Boolean).join('\n\n');
@@ -29,7 +30,7 @@ class Generator {
     );
   }
 
-  #annotateText(text, denotations) {
+  #annotateText(text, denotations, relations) {
     // Annotate text from the end to ensure position calculation.
     denotations
       .sort((a, b) => b.beginPos - a.beginPos)
@@ -37,7 +38,7 @@ class Generator {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
         const annotation = denotation.id
-          ? this.#getAnnotations(denotation)
+          ? this.#getAnnotations(denotation, relations)
           : this.#getObj(denotation.obj);
 
         const annotatedText = `[${text.slice(beginPos, endPos)}][${annotation}]`;
@@ -70,8 +71,7 @@ class Generator {
     );
   }
 
-  #getAnnotations(denotation) {
-    const relations = new RelationValidator().validateRelations(this.source.relations || []);
+  #getAnnotations(denotation, relations) {
     const relation = relations.find((relation) => relation.subj === denotation.id) || null;
     const annotations = [denotation.id, denotation.obj, relation?.pred, relation?.obj];
 
