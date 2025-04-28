@@ -11,6 +11,55 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
           "denotations" => [
+            { "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+            { "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
+          ]
+        }
+      end
+      let(:expected_format) do
+        "[Elon Musk][Person] is a member of the [PayPal Mafia][Organization]."
+      end
+
+      it "generate annotation structure" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when source has config" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" },
+            { "span" => { "begin" => 29, "end" => 41 }, "obj" => "https://example.com/Organization" }
+          ],
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" },
+              { "id" => "https://example.com/Organization", "label" => "Organization" }
+            ]
+          }
+        }
+      end
+      let(:expected_format) do
+        <<~MD2.chomp
+          [Elon Musk][Person] is a member of the [PayPal Mafia][Organization].
+
+          [Person]: https://example.com/Person
+          [Organization]: https://example.com/Organization
+        MD2
+      end
+
+      it "generate label definition structure" do
+        is_expected.to eq(expected_format)
+      end
+    end
+
+    context "when source has denotations and relations" do
+      let(:source) do
+        {
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
             { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
             { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
           ],
@@ -29,7 +78,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
       end
     end
 
-    context "when source has config" do
+    context "when source includes entity config and relations" do
       let(:source) do
         {
           "text" => "Elon Musk is a member of the PayPal Mafia.",
