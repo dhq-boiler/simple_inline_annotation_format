@@ -6,11 +6,13 @@ const ESCAPE_PATTERN = /\\(?=\[[^\]]+\]\[[^\]]+\])/;
 class SimpleInlineTextAnnotation {
   #text;
   #denotations;
+  #relations;
   #entityTypeCollection;
 
-  constructor(text, denotations, entityTypeCollection) {
+  constructor(text, denotations, relations, entityTypeCollection) {
     this.#text = text;
     this.#denotations = denotations;
+    this.#relations = relations;
     this.#entityTypeCollection = entityTypeCollection;
   }
 
@@ -31,6 +33,10 @@ class SimpleInlineTextAnnotation {
       text: this.#formatText(this.#text),
       denotations: this.#denotations.map((d) => d.toObject()),
     };
+
+    if (this.#relations && this.#relations.length > 0) {
+      result.relations = this.#relations
+    }
 
     const config = this.#config();
     if (config && Object.keys(config).length > 0 && !Object.values(config).every((v) => v == null || (Array.isArray(v) && v.length === 0))) {
