@@ -79,9 +79,9 @@ puts result
   - The text specified in `"span"` is enclosed in square brackets `[]`.
   - The annotation type specified in `"obj"` is added in a second set of square brackets `[]`.
 
-## Relation Notation
+## Relation Annotation
 
-The `SimpleInlineTextAnnotation` gem supports advanced relation notation, allowing you to define relationships between annotated entities. This is achieved by interpreting the second set of square brackets (`[]`) based on the number of elements it contains.
+The `SimpleInlineTextAnnotation` gem supports advanced relation annotation, allowing you to define relationships between annotated entities. This is achieved by interpreting the second set of square brackets (`[]`) based on the number of elements it contains.
 
 #### Parsing Rules
 
@@ -132,9 +132,9 @@ puts result
     - `"subj"`: The `id` of the subject denotation.
     - `"obj"`: The `id` of the object denotation.
 
-### Generating Relation Notation
+### Generating Relation Annotation
 
-The `generate` method can also create strings with relation notations from structured data.
+The `generate` method can also create strings with relation annotations from structured data.
 
 ```ruby
 result = SimpleInlineTextAnnotation.generate({

@@ -107,9 +107,9 @@ The `generate` method takes an object with the following structure:
   - `"id"`: The unique identifier for the entity type.
   - `"label"`: The human-readable label for the entity type.
 
-## Relation Notation
+## Relation Annotation
 
-The `SimpleInlineTextAnnotation` gem supports advanced relation notation, allowing you to define relationships between annotated entities. This is achieved by interpreting the second set of square brackets (`[]`) based on the number of elements it contains.
+The `SimpleInlineTextAnnotation` gem supports advanced relation annotation, allowing you to define relationships between annotated entities. This is achieved by interpreting the second set of square brackets (`[]`) based on the number of elements it contains.
 
 ### Parsing Rules
 
@@ -163,9 +163,9 @@ console.log(result);
     - `"subj"`: The `id` of the subject denotation.
     - `"obj"`: The `id` of the object denotation.
 
-### Generating Relation Notation
+### Generating Relation Annotation
 
-The `generate` method can also create strings with relation notations from structured data.
+The `generate` method can also create strings with relation annotations from structured data.
 
 ```js
 import SimpleInlineTextAnnotation from 'simple-inline-text-annotation'
