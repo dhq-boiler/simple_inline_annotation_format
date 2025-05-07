@@ -1,6 +1,7 @@
 import Denotation from './denotation.mjs';
 import DenotationValidator from './denotation_validator.mjs';
 import GeneratorError from './generator_error.mjs';
+import RelationValidator from './relation_validator.mjs';
 
 class Generator {
   constructor(source) {
@@ -15,8 +16,9 @@ class Generator {
       throw new GeneratorError('The "text" key is missing.');
     }
 
-    const denotations =  new DenotationValidator().validate(this.denotations, text.length);
-    const annotatedText = this.#annotateText(text, denotations);
+    const denotations =  new DenotationValidator().validateDenotations(this.denotations, text.length);
+    const relations = new RelationValidator().validateRelations(this.source.relations || []);
+    const annotatedText = this.#annotateText(text, denotations, relations);
     const labelDefinitions = this.#buildLabelDefinitions();
 
     return [annotatedText, labelDefinitions].filter(Boolean).join('\n\n');
@@ -24,20 +26,22 @@ class Generator {
 
   #buildDenotations(denotations) {
     return denotations.map(
-      (d) => new Denotation(d.span.begin, d.span.end, d.obj)
+      (d) => new Denotation(d.span.begin, d.span.end, d.obj, d.id || null)
     );
   }
 
-  #annotateText(text, denotations) {
+  #annotateText(text, denotations, relations) {
     // Annotate text from the end to ensure position calculation.
     denotations
       .sort((a, b) => b.beginPos - a.beginPos)
       .forEach((denotation) => {
         const beginPos = denotation.beginPos;
         const endPos = denotation.endPos;
-        const obj = this.#getObj(denotation.obj);
+        const annotation = denotation.id
+          ? this.#getAnnotations(denotation, relations)
+          : this.#getObj(denotation.obj);
 
-        const annotatedText = `[${text.slice(beginPos, endPos)}][${obj}]`;
+        const annotatedText = `[${text.slice(beginPos, endPos)}][${annotation}]`;
         text = text.slice(0, beginPos) + annotatedText + text.slice(endPos);
       });
 
@@ -65,6 +69,19 @@ class Generator {
         entityType.hasOwnProperty('label')
       ) || null
     );
+  }
+
+  #getAnnotations(denotation, relations) {
+    const relation = relations.find((relation) => relation.subj === denotation.id) || null;
+    const annotations = [denotation.id, denotation.obj, relation?.pred, relation?.obj];
+
+    if (!this.#labeledEntityTypes()) {
+      return annotations.filter((item) => item !== null && item !== undefined).join(', ');
+    }
+
+    annotations[1] = this.#getObj(denotation.obj)
+    const entity = this.#labeledEntityTypes().find((entityType) => entityType.id === denotation.obj);
+    return annotations.filter((item) => item !== null && item !== undefined).join(', ');
   }
 
   #getObj(obj) {

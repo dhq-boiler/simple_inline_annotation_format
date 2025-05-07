@@ -1,5 +1,5 @@
 class DenotationValidator {
-  validate(denotations, textLength) {
+  validateDenotations(denotations, textLength) {
     let result = this.#removeDuplicatesFrom(denotations);
     result = this.#removeNonIntegerPositionsFrom(result);
     result = this.#removeNegativePositionsFrom(result);

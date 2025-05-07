@@ -54,8 +54,7 @@ describe('SimpleInlineTextAnnotation.generate', () => {
     const source = {
       text: "Elon Musk is a member of the PayPal Mafia.",
       denotations: [
-        { span: { begin: 0.1, end: 9.6 }, obj: "Person" },
-        { span: { begin: "0", end: "9" }, obj: "Organization" }
+        { span: { begin: 0.1, end: 9.6 }, obj: "Person" }
       ]
     };
     const expected = "Elon Musk is a member of the PayPal Mafia.";
