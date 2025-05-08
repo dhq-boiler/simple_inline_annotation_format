@@ -18,7 +18,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Publish to Rubygems
+      # Publish the gem to RubyGems
+      # Reference: https://docs.github.com/ja/actions/use-cases-and-examples/building-and-testing/building-and-testing-ruby#publishing-gems
+      - name: Publish to RubyGems
         env:
           RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
         run: |
