@@ -18,14 +18,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build gem
-        run: |
-          cd ruby
-          gem build simple_inline_text_annotation.gemspec
-
       - name: Publish to Rubygems
         env:
           RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
         run: |
           cd ruby
-          gem push simple_inline_text_annotation-*.gem
+          mkdir -p .gem
+          printf -- "---\n:rubygems_api_key: ${RUBYGEMS_API_KEY}\n" > .gem/credentials
+          chmod 0600 .gem/credentials
+          gem build simple_inline_text_annotation.gemspec
+          gem push simple_inline_text_annotation-*.gem --config-file .gem/credentials
