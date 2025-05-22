@@ -7,7 +7,7 @@
 To install the library, use npm:
 
 ```bash
-npm install simple-inline-text-annotation
+npm install @pubann/simple-inline-text-annotation
 ```
 
 ## Usage
