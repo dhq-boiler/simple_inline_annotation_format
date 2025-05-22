@@ -32,6 +32,9 @@ jobs:
           cd js
           npm ci
 
+      # Publish the package to npm
+      # Reference: https://docs.github.com/ja/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
+
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
