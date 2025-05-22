@@ -11,12 +11,12 @@ Gem::Specification.new do |s|
   s.summary = "A Ruby gem for inline text annotation with denotations and entity types."
   s.description = "This gem provides inline text annotation functionality, extracted from PubAnnotation, " \
                   "with support for denotations, entity types, and nested spans."
-  s.homepage = "https://github.com/Tamada-Arino/simple-inline-text-annotation"
+  s.homepage = "https://github.com/pubannotation/simple_inline_annotation_format"
   s.license = "MIT"
   s.required_ruby_version = ">= 3.1.0"
 
   s.metadata["homepage_uri"] = s.homepage
-  s.metadata["changelog_uri"] = "https://github.com/Tamada-Arino/simple-inline-text-annotation/blob/master/CHANGELOG.md"
+  s.metadata["changelog_uri"] = "https://github.com/pubannotation/simple_inline_annotation_format/blob/master/ruby/CHANGELOG.md"
   s.metadata["rubygems_uri"] = "https://rubygems.org/gems/simple_inline_text_annotation"
 
   gemspec = File.basename(__FILE__)
