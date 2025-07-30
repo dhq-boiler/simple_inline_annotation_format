@@ -1,5 +1,6 @@
 AllCops:
   TargetRubyVersion: 3.1
+  NewCops: enable
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -14,8 +15,8 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
 
-Layout/LineEndStringConcatenationIndentation:
-  Enabled: true
+Lint/SymbolConversion:
+  Enabled: false
 
-Style/SuperArguments:
-  Enabled: true
+Gemspec/RequireMFA:
+  Enabled: false
