@@ -89,7 +89,7 @@ RSpec.describe SimpleInlineTextAnnotation::Generator, type: :model do
       end
       let(:expected_format) do
         "[Elon Musk][T1, Person, member_of, T2] is a member of the " \
-        "[PayPal Mafia][T2, Organization]."
+          "[PayPal Mafia][T2, Organization]."
       end
 
       it "generate annotation structure" do

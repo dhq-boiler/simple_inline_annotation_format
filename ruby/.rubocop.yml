@@ -13,3 +13,6 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
+
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: true

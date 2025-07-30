@@ -339,12 +339,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
     context "when the number of annotations is invalid" do
       let(:source) do
         "[Elon Musk][T1, Person, member_of, T2, Hoge] is a member of the " \
-        "[PayPal Mafia][T2, Organization, Fuga]."
+          "[PayPal Mafia][T2, Organization, Fuga]."
       end
       let(:expected_format) do
         {
           "text": "[Elon Musk][T1, Person, member_of, T2, Hoge] is a member of the " \
-          "[PayPal Mafia][T2, Organization, Fuga].",
+                  "[PayPal Mafia][T2, Organization, Fuga].",
           "denotations": []
         }
       end
