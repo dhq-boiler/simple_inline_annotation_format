@@ -16,3 +16,6 @@ Metrics/BlockLength:
 
 Layout/LineEndStringConcatenationIndentation:
   Enabled: true
+
+Style/SuperArguments:
+  Enabled: true
