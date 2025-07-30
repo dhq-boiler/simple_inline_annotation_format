@@ -38,10 +38,10 @@ class SimpleInlineTextAnnotation
 
   def to_h
     {
-      text: format_text(@text),
-      denotations: @denotations.map(&:to_h),
-      relations: @relations.empty? ? nil : @relations,
-      config: config
+      "text" => format_text(@text),
+      "denotations" => @denotations.map(&:to_h),
+      "relations" => @relations.empty? ? nil : @relations,
+      "config" => config
     }.compact
   end
 
@@ -68,6 +68,6 @@ class SimpleInlineTextAnnotation
   def config
     return nil unless @entity_type_collection.any?
 
-    { "entity types": @entity_type_collection.to_config }
+    { "entity types" => @entity_type_collection.to_config }
   end
 end

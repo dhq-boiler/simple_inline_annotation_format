@@ -89,7 +89,7 @@ class SimpleInlineTextAnnotation
       subj, label, pred, obj2 = annotations
       obj = get_obj_for(label)
       @denotations << Denotation.new(begin_pos, end_pos, obj, subj)
-      @relations << { pred: pred, subj: subj, obj: obj2 }
+      @relations << { "pred" => pred, "subj" => subj, "obj" => obj2 }
     end
   end
 end

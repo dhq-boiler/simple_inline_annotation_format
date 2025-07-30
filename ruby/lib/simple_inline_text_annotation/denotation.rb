@@ -15,11 +15,11 @@ class SimpleInlineTextAnnotation
     end
 
     def span
-      { begin: @begin_pos, end: @end_pos }
+      { "begin" => @begin_pos, "end" => @end_pos }
     end
 
     def to_h
-      { id: @id, span: span, obj: @obj }.compact
+      { "id" => @id, "span" => span, "obj" => @obj }.compact
     end
 
     def nested_within?(other)

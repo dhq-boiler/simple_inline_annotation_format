@@ -10,13 +10,13 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       let(:source) { "[Elon Musk][T1, Person, member_of, T2] is a member of the [PayPal Mafia][T2, Organization]." }
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" },
-            { "id": "T2", "span": { "begin": 29, "end": 41 }, "obj": "Organization" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" },
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "Organization" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ]
         }
       end
@@ -37,18 +37,18 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" },
-            { "id": "T2", "span": { "begin": 29, "end": 41 }, "obj": "https://example.com/Organization" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" },
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "https://example.com/Organization" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ],
-          "config": {
-            "entity types": [
-              { "id": "https://example.com/Person", "label": "Person" },
-              { "id": "https://example.com/Organization", "label": "Organization" }
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" },
+              { "id" => "https://example.com/Organization", "label" => "Organization" }
             ]
           }
         }
@@ -63,9 +63,9 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       let(:source) { '\[Elon Musk][T1, Person, member_of, T2] is a member of the [PayPal Mafia][T2, Organization].' }
       let(:expected_format) do
         {
-          "text": "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T2", "span": { "begin": 59, "end": 71 }, "obj": "Organization" }
+          "text" => "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T2", "span" => { "begin" => 59, "end" => 71 }, "obj" => "Organization" }
           ]
         }
       end
@@ -84,12 +84,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.\n[Person]: https://example.com/Person",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.\n[Person]: https://example.com/Person",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ]
         }
       end
@@ -109,16 +109,16 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ],
-          "config": {
-            "entity types": [
-              { "id": "https://example.com/Person", "label": "Person" }
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" }
             ]
           }
         }
@@ -141,18 +141,18 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
         end
         let(:expected_format) do
           {
-            "text": "Elon Musk is a member of the PayPal Mafia.",
-            "denotations": [
-              { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" },
-              { "id": "T2", "span": { "begin": 29, "end": 41 }, "obj": "https://example.com/Organization" }
+            "text" => "Elon Musk is a member of the PayPal Mafia.",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" },
+              { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "https://example.com/Organization" }
             ],
-            "relations": [
-              { "pred": "member_of", "subj": "T1", "obj": "T2" }
+            "relations" => [
+              { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
             ],
-            "config": {
-              "entity types": [
-                { "id": "https://example.com/Person", "label": "Person" },
-                { "id": "https://example.com/Organization", "label": "Organization" }
+            "config" => {
+              "entity types" => [
+                { "id" => "https://example.com/Person", "label" => "Person" },
+                { "id" => "https://example.com/Organization", "label" => "Organization" }
               ]
             }
           }
@@ -173,12 +173,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
         end
         let(:expected_format) do
           {
-            "text": "Elon Musk is a member of the PayPal Mafia.\n\n[Person]: https://example.com/Person text",
-            "denotations": [
-              { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+            "text" => "Elon Musk is a member of the PayPal Mafia.\n\n[Person]: https://example.com/Person text",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
             ],
-            "relations": [
-              { "pred": "member_of", "subj": "T1", "obj": "T2" }
+            "relations" => [
+              { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
             ]
           }
         end
@@ -200,16 +200,16 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.\n\nhello",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.\n\nhello",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ],
-          "config": {
-            "entity types": [
-              { "id": "https://example.com/Person", "label": "Person" }
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" }
             ]
           }
         }
@@ -231,16 +231,16 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ],
-          "config": {
-            "entity types": [
-              { "id": "https://example.com/Person", "label": "Person" }
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" }
             ]
           }
         }
@@ -261,12 +261,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ]
         }
       end
@@ -287,12 +287,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.\n\nElon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.\n\nElon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ]
         }
       end
@@ -314,18 +314,18 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" },
-            { "id": "T2", "span": { "begin": 29, "end": 41 }, "obj": "https://example.com/Organization" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" },
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "https://example.com/Organization" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ],
-          "config": {
-            "entity types": [
-              { "id": "https://example.com/Person", "label": "Person" },
-              { "id": "https://example.com/Organization", "label": "Organization" }
+          "config" => {
+            "entity types" => [
+              { "id" => "https://example.com/Person", "label" => "Person" },
+              { "id" => "https://example.com/Organization", "label" => "Organization" }
             ]
           }
         }
@@ -343,9 +343,9 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
       end
       let(:expected_format) do
         {
-          "text": "[Elon Musk][T1, Person, member_of, T2, Hoge] is a member of the " \
-                  "[PayPal Mafia][T2, Organization, Fuga].",
-          "denotations": []
+          "text" => "[Elon Musk][T1, Person, member_of, T2, Hoge] is a member of the " \
+                    "[PayPal Mafia][T2, Organization, Fuga].",
+          "denotations" => []
         }
       end
 
@@ -361,12 +361,12 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
         end
         let(:expected_format) do
           {
-            "text": "Elon Musk[Fuga] is a member of the PayPal Mafia.",
-            "denotations": [
-              { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "Person" }
+            "text" => "Elon Musk[Fuga] is a member of the PayPal Mafia.",
+            "denotations" => [
+              { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "Person" }
             ],
-            "relations": [
-              { "pred": "member_of", "subj": "T1", "obj": "T2" }
+            "relations" => [
+              { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
             ]
           }
         end
@@ -382,8 +382,8 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
         end
         let(:expected_format) do
           {
-            "text": "[Elon Musk][T1, Person, member_of, T2, Hoge][Fuga] is a member of the PayPal Mafia.",
-            "denotations": []
+            "text" => "[Elon Musk][T1, Person, member_of, T2, Hoge][Fuga] is a member of the PayPal Mafia.",
+            "denotations" => []
           }
         end
 
@@ -405,13 +405,13 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
 
       let(:expected_format) do
         {
-          "text": "Elon Musk is a member of the PayPal Mafia.",
-          "denotations": [
-            { "id": "T1", "span": { "begin": 0, "end": 9 }, "obj": "https://example.com/Person" },
-            { "id": "T2", "span": { "begin": 29, "end": 41 }, "obj": "https://example.com/Organization" }
+          "text" => "Elon Musk is a member of the PayPal Mafia.",
+          "denotations" => [
+            { "id" => "T1", "span" => { "begin" => 0, "end" => 9 }, "obj" => "https://example.com/Person" },
+            { "id" => "T2", "span" => { "begin" => 29, "end" => 41 }, "obj" => "https://example.com/Organization" }
           ],
-          "relations": [
-            { "pred": "member_of", "subj": "T1", "obj": "T2" }
+          "relations" => [
+            { "pred" => "member_of", "subj" => "T1", "obj" => "T2" }
           ]
         }
       end
