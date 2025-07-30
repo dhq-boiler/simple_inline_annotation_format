@@ -15,8 +15,5 @@ Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
 
-Lint/SymbolConversion:
-  Enabled: false
-
 Gemspec/RequireMFA:
   Enabled: false
