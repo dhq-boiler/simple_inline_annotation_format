@@ -23,12 +23,10 @@ class SimpleInlineTextAnnotation
       process_annotations(full_text)
       check_denotations_and_relations
 
-      SimpleInlineTextAnnotation.new(
-        full_text,
-        @denotations,
-        @relations,
-        @entity_type_collection
-      )
+      SimpleInlineTextAnnotation.new full_text,
+                                     @denotations,
+                                     @relations,
+                                     @entity_type_collection
     end
 
     private
