@@ -432,5 +432,13 @@ RSpec.describe SimpleInlineTextAnnotation::Parser, type: :model do
         expect(result[:denotations]).to eq(expected_format[:denotations])
       end
     end
+
+    context "when source relations are fragmented" do
+      let(:source) { "[Elon Musk][T1, Person, member_of, T2] is a member of the PayPal Mafia." }
+
+      it "raise RelationWithoutDenotationError" do
+        expect { subject }.to raise_error(SimpleInlineTextAnnotation::RelationWithoutDenotationError)
+      end
+    end
   end
 end
