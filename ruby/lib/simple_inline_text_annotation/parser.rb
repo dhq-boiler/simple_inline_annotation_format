@@ -13,17 +13,15 @@ class SimpleInlineTextAnnotation
     def initialize(source)
       @source = source.dup.freeze
       @entity_type_collection = EntityTypeCollection.new(source)
+      @denotations = []
+      @relations = []
+      @full_text = source_without_references
+      process_annotations(@full_text)
+      check_denotations_and_relations
     end
 
     def parse
-      @denotations = []
-      @relations = []
-      full_text = source_without_references
-
-      process_annotations(full_text)
-      check_denotations_and_relations
-
-      SimpleInlineTextAnnotation.new full_text,
+      SimpleInlineTextAnnotation.new @full_text,
                                      @denotations,
                                      @relations,
                                      @entity_type_collection
