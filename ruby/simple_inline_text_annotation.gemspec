@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
                   "with support for denotations, entity types, and nested spans."
   s.homepage = "https://github.com/pubannotation/simple_inline_annotation_format"
   s.license = "MIT"
-  s.required_ruby_version = ">= 3.1.0"
+  s.required_ruby_version = ">= 3.4.4"
 
   s.metadata["homepage_uri"] = s.homepage
   s.metadata["changelog_uri"] = "https://github.com/pubannotation/simple_inline_annotation_format/blob/master/ruby/CHANGELOG.md"
