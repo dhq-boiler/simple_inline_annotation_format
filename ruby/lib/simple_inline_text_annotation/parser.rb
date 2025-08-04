@@ -21,7 +21,6 @@ class SimpleInlineTextAnnotation
       full_text = source_without_references
 
       process_annotations(full_text)
-      check_denotations_and_relations
 
       SimpleInlineTextAnnotation.new full_text,
                                      @denotations,
@@ -91,21 +90,6 @@ class SimpleInlineTextAnnotation
       obj = get_obj_for(label)
       @denotations << Denotation.new(begin_pos, end_pos, obj, subj)
       @relations << { "pred" => pred, "subj" => subj, "obj" => obj2 }
-    end
-
-    def check_denotations_and_relations
-      @relations.each do |relation|
-        unless referable_to?(relation, @denotations)
-          raise SimpleInlineTextAnnotation::RelationWithoutDenotationError,
-                "Relation #{relation.inspect} refers to missing denotation."
-        end
-      end
-    end
-
-    def referable_to?(relation, denotations)
-      denotation_ids = denotations.map(&:id)
-
-      denotation_ids.include?(relation["subj"]) && denotation_ids.include?(relation["obj"])
     end
   end
 end
