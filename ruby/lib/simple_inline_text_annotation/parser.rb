@@ -2,6 +2,7 @@
 
 require_relative "entity_type_collection"
 require_relative "denotation"
+require_relative "relation_without_denotation_error"
 
 class SimpleInlineTextAnnotation
   class Parser
@@ -21,12 +22,10 @@ class SimpleInlineTextAnnotation
 
       process_annotations(full_text)
 
-      SimpleInlineTextAnnotation.new(
-        full_text,
-        @denotations,
-        @relations,
-        @entity_type_collection
-      )
+      SimpleInlineTextAnnotation.new full_text,
+                                     @denotations,
+                                     @relations,
+                                     @entity_type_collection
     end
 
     private
@@ -58,6 +57,7 @@ class SimpleInlineTextAnnotation
       return match.end(0) unless process_annotation(match[2], begin_pos, end_pos)
 
       full_text[match.begin(0)...match.end(0)] = target_text
+
       end_pos
     end
 

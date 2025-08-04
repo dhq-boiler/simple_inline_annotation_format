@@ -25,6 +25,7 @@ class SimpleInlineTextAnnotation
     @denotations = denotations
     @relations = relations
     @entity_type_collection = entity_type_collection
+    check_denotations_and_relations
   end
 
   def self.parse(source)
@@ -69,5 +70,20 @@ class SimpleInlineTextAnnotation
     return nil unless @entity_type_collection.any?
 
     { "entity types" => @entity_type_collection.to_config }
+  end
+
+  def check_denotations_and_relations
+    @relations.each do |relation|
+      unless referable_to?(relation, @denotations)
+        raise SimpleInlineTextAnnotation::RelationWithoutDenotationError,
+              "Relation #{relation.inspect} refers to missing denotation."
+      end
+    end
+  end
+
+  def referable_to?(relation, denotations)
+    denotation_ids = denotations.map(&:id)
+
+    denotation_ids.include?(relation["subj"]) && denotation_ids.include?(relation["obj"])
   end
 end
