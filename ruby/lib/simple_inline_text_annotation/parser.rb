@@ -58,6 +58,7 @@ class SimpleInlineTextAnnotation
       return match.end(0) unless process_annotation(match[2], begin_pos, end_pos)
 
       full_text[match.begin(0)...match.end(0)] = target_text
+
       end_pos
     end
 
@@ -103,6 +104,7 @@ class SimpleInlineTextAnnotation
 
     def referable_to?(relation, denotations)
       denotation_ids = denotations.map { it["id"] }
+
       denotation_ids.include?(relation["subj"]) && denotation_ids.include?(relation["obj"])
     end
   end
